@@ -48,9 +48,25 @@ const Productos = () => {
 					/>
 				</div>
 			</div>
-			<div className="flex justify-center items-center gap-4 flex-wrap mt-[77px] max-w-[1080px] mx-auto">
+			<div className="flex justify-center items-center gap-4 flex-wrap mt-[77px] max-w-[1200px] mx-auto ">
 				{[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
-					<div key={item} className="h-[300]  w-[250px] bg-white"></div>
+					<div
+						key={item}
+						className="h-[311px]  w-[264px] bg-white py-[30px] px-[14px]"
+					>
+						<Image
+							height={50}
+							width={240}
+							src="/producto.png"
+							alt="imagen de producto"
+							className=" object-cover"
+						/>
+						<div>
+							<h3 className="text-[20px] font-semibold">Producto</h3>
+							<p className="text-[15px] text-[#7C7C7C]">500 ml </p>
+							<p className="text-[15px] text-[#7C7C7C]">S/ 20.00</p>
+						</div>
+					</div>
 				))}
 			</div>
 		</div>
