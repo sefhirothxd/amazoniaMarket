@@ -82,15 +82,13 @@ export const Footer = () => {
 					Todos los Derechos reservados por Amazonia Market
 				</div>
 			</div>
-			<div className="absolute bottom-0 left-0 w-full">
-				<Image
-					src={'/arbolitos.svg'}
-					alt="arbolitos"
-					height={100}
-					width={100}
-					className="w-full"
-				/>
-			</div>
+			<Image
+				className="absolute bottom-0 left-0 w-full h-full object-fill"
+				src="/arbolitos.svg"
+				alt="footer"
+				width={100}
+				height={100}
+			/>
 		</footer>
 	);
 };
