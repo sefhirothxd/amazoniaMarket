@@ -64,6 +64,7 @@ function ProductList() {
 			// 	title: 'Producto actualizado',
 			// 	description: 'El producto se ha actualizado correctamente.',
 			// });
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (error) {
 			// toast({
 			// 	title: 'Error',
@@ -81,6 +82,7 @@ function ProductList() {
 			// 	title: 'Producto agregado',
 			// 	description: 'El nuevo producto se ha agregado correctamente.',
 			// });
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (error) {
 			// toast({
 			// 	title: 'Error',
