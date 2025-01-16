@@ -27,7 +27,7 @@ export const Footer = () => {
 				</h2>
 
 				<div className="flex justify-center items-center flex-col max-w-[900px] mx-auto">
-					<div className="flex  justify-between w-full text-[25px] font-semibold mb-[50px]">
+					<div className="flex  sm:justify-between w-full text-[25px] font-semibold mb-[50px] flex-wrap justify-center">
 						<div>
 							<h3 className="font-semibold mb-2">Nosotros</h3>
 							<ul>
@@ -36,13 +36,13 @@ export const Footer = () => {
 								<li>Contacto</li>
 							</ul>
 						</div>
-						<div>
+						{/* <div>
 							<h3 className="font-semibold mb-2">Ruc</h3>
 							<ul>
 								<li>Correo</li>
 								<li>Contacto</li>
 							</ul>
-						</div>
+						</div> */}
 						<div>
 							<p className="font-semibold mb-2">Ruc 759456123</p>
 							<p>+51 965 462 649</p>

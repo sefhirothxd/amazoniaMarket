@@ -4,11 +4,11 @@ import Image from 'next/image';
 const Banner = () => {
 	return (
 		<div className="relative bg-[#3D4543] text-white min-h-[600px]">
-			<div className="container mx-auto px-4 pt-20 pb-32">
-				<div className="flex flex-col  relative justify-center  max-w-screen-xl mx-auto  ">
-					{/* Navigation Arrows */}
-
-					<div className="absolute w-full  flex justify-between items-center">
+			<Image src="/banner.jpg" alt="banner" layout="fill" objectFit="cover" />
+			{/* <div className="container mx-auto px-4 pt-20 pb-32">
+				<div className="flex flex-col  relative justify-center  max-w-screen-xl mx-auto  "> */}
+			{/* Navigation Arrows */}
+			{/* <div className="absolute w-full  flex justify-between items-center">
 						<button>
 							<Image
 								src="/left-arrow.svg"
@@ -25,30 +25,9 @@ const Banner = () => {
 								height={25}
 							/>
 						</button>
-					</div>
-					{/* Content */}
-					<div className="ml-[70px]">
-						<h2 className="text-4xl font-bold mb-2">Year Experience</h2>
-						<h1 className="text-5xl font-bold mb-6">Year Experience</h1>
-						<p className="text-lg mb-8 max-w-96">
-							Lorem ipsum dolor sit amet et pretium consectetur eget amet et
-							pretium eget accumsan et tincidunt massa urna.
-						</p>
-						<div className="pt-[31px]">
-							<button className="flex items-center pl-[37px] text-[25px] font-semibold py-[3px] pr-[3px] rounded-full border-[3px] border-white">
-								Ver Tiendas{' '}
-								<Image
-									className="ml-[31px]"
-									src="/btn-arrow.svg"
-									alt="flecha izquierda"
-									width={50}
-									height={48}
-								/>
-							</button>
-						</div>
-					</div>
-				</div>
-			</div>
+					</div> */}
+			{/* </div>
+			</div> */}
 
 			{/* Wave SVG */}
 			<div className="absolute bottom-0 left-0 w-full">

@@ -12,7 +12,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="es">
+		<html lang="en" suppressHydrationWarning>
 			<body className="font-mali">{children}</body>
 		</html>
 	);
