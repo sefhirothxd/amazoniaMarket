@@ -1,44 +1,8 @@
 [
   {
-    "id": "1",
-    "name": "Laptop Ultradelgada",
-    "price": 999.99,
-    "stock": 50
-  },
-  {
-    "id": "2",
-    "name": "Smartphone 5G",
-    "price": 699.99,
-    "stock": 100
-  },
-  {
-    "id": "3",
-    "name": "Auriculares Inalámbricos",
-    "price": 149.99,
-    "stock": 200
-  },
-  {
-    "id": "4",
-    "name": "Tablet 10 pulgadas",
-    "price": 299.99,
-    "stock": 75
-  },
-  {
-    "id": "5",
-    "name": "Smartwatch Deportivo",
-    "price": 199.99,
-    "stock": 150
-  },
-  {
-    "id": "6",
-    "name": "Cámara DSLR Profesional",
-    "price": 1299.99,
-    "stock": 25
-  },
-  {
     "id": "7",
     "name": "Altavoz Bluetooth Portátil",
-    "price": 79.99,
+    "price": 2000,
     "stock": 100
   },
   {
