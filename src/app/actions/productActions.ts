@@ -3,7 +3,12 @@
 import fs from 'fs/promises';
 import path from 'path';
 
-const productsFilePath = path.join(process.cwd(), 'data', 'products.json');
+const productsFilePath = path.join(
+	process.cwd(),
+	'public',
+	'data',
+	'products.json'
+);
 console.log('aqui toy : ', productsFilePath);
 type Product = {
 	id: string;
