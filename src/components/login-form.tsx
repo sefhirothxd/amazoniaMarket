@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
+import { ToastAction } from '@/components/ui/toast';
 
 export function LoginForm() {
 	const [email, setEmail] = useState('');
@@ -23,10 +24,11 @@ export function LoginForm() {
 			password,
 		});
 		if (error) {
+			console.log('🚀 ~ handleLogin ~ error:', error);
 			toast({
 				title: 'Error',
 				description: error.message,
-				variant: 'destructive',
+				action: <ToastAction altText="Goto schedule to undo">Undo</ToastAction>,
 			});
 		} else {
 			router.push('/dashboard');
@@ -35,7 +37,7 @@ export function LoginForm() {
 	};
 
 	return (
-		<form onSubmit={handleLogin} className="space-y-4">
+		<form onSubmit={handleLogin} className="space-y-4 ">
 			<div>
 				<Label htmlFor="email">Email</Label>
 				<Input

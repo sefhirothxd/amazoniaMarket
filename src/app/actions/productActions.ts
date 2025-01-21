@@ -1,78 +1,79 @@
 'use server';
 
-import fs from 'fs/promises';
-import path from 'path';
+import { createClient } from '@supabase/supabase-js';
 
-const productsFilePath = path.join(
-	process.cwd(),
-	'public',
-	'data',
-	'products.json'
-);
-console.log('aqui toy : ', productsFilePath);
+// Configura el cliente de Supabase
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+const supabase = createClient(supabaseUrl, supabaseKey);
+
 type Product = {
-	id: string;
+	id: number;
 	name: string;
 	price: number;
+	description: string;
 	stock: number;
 };
 
+// Obtener todos los productos
 export async function getProducts(): Promise<Product[]> {
-	try {
-		// Ensure the directory exists
-		await fs.mkdir(path.dirname(productsFilePath), { recursive: true });
-
-		const data = await fs.readFile(productsFilePath, 'utf8');
-		console.log('data : ', data);
-		return JSON.parse(data);
-	} catch (error) {
-		console.error('Error reading products:', error);
-		// If the file doesn't exist, create it with an empty array
-		if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
-			await fs.writeFile(productsFilePath, '[]', 'utf8');
-			return [];
-		}
-		throw error;
+	const { data, error } = await supabase.from('products').select('*');
+	console.log('🚀 ~ getProducts ~ data:', data);
+	if (error) {
+		console.error('Error fetching products:', error);
+		throw new Error('Error fetching products');
 	}
+
+	return data || [];
 }
 
+// Agregar un nuevo producto
 export async function addProduct(
 	product: Omit<Product, 'id'>
 ): Promise<Product> {
-	const products = await getProducts();
-	const id = (
-		Math.max(...products.map((p) => parseInt(p.id)), 0) + 1
-	).toString();
-	const newProduct = { ...product, id };
-	products.push(newProduct);
-	await fs.writeFile(
-		productsFilePath,
-		JSON.stringify(products, null, 2),
-		'utf8'
-	);
-	return newProduct;
-}
+	const { data, error } = await supabase
+		.from('products')
+		.insert([product])
+		.select()
+		.single();
 
-export async function updateProduct(updatedProduct: Product): Promise<Product> {
-	const products = await getProducts();
-	const index = products.findIndex((p) => p.id === updatedProduct.id);
-	if (index !== -1) {
-		products[index] = updatedProduct;
-		await fs.writeFile(
-			productsFilePath,
-			JSON.stringify(products, null, 2),
-			'utf8'
-		);
+	if (error) {
+		console.error('Error adding product:', error);
+		throw new Error('Error adding product');
 	}
-	return updatedProduct;
+
+	return data!;
 }
 
-export async function deleteProduct(id: string): Promise<void> {
-	const products = await getProducts();
-	const updatedProducts = products.filter((p) => p.id !== id);
-	await fs.writeFile(
-		productsFilePath,
-		JSON.stringify(updatedProducts, null, 2),
-		'utf8'
-	);
+// Actualizar un producto existente
+export async function updateProduct(updatedProduct: Product): Promise<Product> {
+	const { data, error } = await supabase
+		.from('products')
+		.update({
+			name: updatedProduct.name,
+			price: updatedProduct.price,
+			description: updatedProduct.description,
+			stock: updatedProduct.stock,
+		})
+		.eq('id', updatedProduct.id)
+		.select()
+		.single();
+
+	if (error) {
+		console.error('Error updating product:', error);
+		throw new Error('Error updating product');
+	}
+
+	return data!;
+}
+
+// Eliminar un producto por ID
+export async function deleteProduct(id: number): Promise<void> {
+	const { error } = await supabase.from('products').delete().eq('id', id);
+
+	if (error) {
+		console.error('Error deleting product:', error);
+		throw new Error('Error deleting product');
+	}
 }

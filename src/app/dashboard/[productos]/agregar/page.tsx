@@ -27,6 +27,7 @@ import { useProductStore } from '@/store/useProductStore';
 type Product = {
 	id: string;
 	name: string;
+	description: string;
 	price: number;
 	stock: number;
 };
@@ -130,6 +131,9 @@ function ProductList() {
 								Nombre
 							</TableHead>
 							<TableHead className="text-foreground dark:text-gray-300">
+								Descripcion
+							</TableHead>
+							<TableHead className="text-foreground dark:text-gray-300">
 								Precio
 							</TableHead>
 							<TableHead className="text-foreground dark:text-gray-300">
@@ -145,6 +149,9 @@ function ProductList() {
 							<TableRow key={product.id}>
 								<TableCell className="font-medium text-foreground dark:text-gray-300">
 									{product.name}
+								</TableCell>
+								<TableCell className="text-foreground dark:text-gray-300">
+									{product.description}
 								</TableCell>
 								<TableCell className="text-foreground dark:text-gray-300">
 									${product.price.toFixed(2)}

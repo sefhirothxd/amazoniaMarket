@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import './globals.css';
+import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
 	title: 'Amazonia market',
@@ -13,7 +14,10 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en" suppressHydrationWarning>
-			<body className="font-mali">{children}</body>
+			<body className="font-mali">
+				{children}
+				<Toaster />
+			</body>
 		</html>
 	);
 }
