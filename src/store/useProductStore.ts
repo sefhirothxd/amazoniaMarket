@@ -7,7 +7,7 @@ import {
 } from '@/app/actions/productActions';
 
 type Product = {
-	id: string;
+	id: number;
 	name: string;
 	description: string;
 	price: number;
@@ -21,7 +21,7 @@ type ProductStore = {
 	fetchProducts: () => Promise<void>;
 	addProduct: (product: Omit<Product, 'id'>) => Promise<void>;
 	updateProduct: (product: Product) => Promise<void>;
-	deleteProduct: (id: string) => Promise<void>;
+	deleteProduct: (id: number) => Promise<void>;
 };
 
 export const useProductStore = create<ProductStore>((set) => ({
@@ -68,7 +68,7 @@ export const useProductStore = create<ProductStore>((set) => ({
 			});
 		}
 	},
-	deleteProduct: async (id) => {
+	deleteProduct: async (id: number) => {
 		set({ isLoading: true, error: null });
 		try {
 			await deleteProduct(id);

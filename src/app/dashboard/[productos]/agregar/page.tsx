@@ -25,7 +25,7 @@ import { Label } from '@/components/ui/label';
 import { useProductStore } from '@/store/useProductStore';
 
 type Product = {
-	id: string;
+	id: number;
 	name: string;
 	description: string;
 	price: number;
@@ -47,7 +47,7 @@ function ProductList() {
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 	const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
-	const handleDelete = async (id: string) => {
+	const handleDelete = async (id: number) => {
 		await deleteProduct(id);
 	};
 
@@ -214,7 +214,7 @@ export default ProductList;
 type ProductFormProps = {
 	product?: Product;
 	onSave: (
-		product: Product extends { id: string } ? Product : Omit<Product, 'id'>
+		product: Product extends { id: number } ? Product : Omit<Product, 'id'>
 	) => void;
 };
 
