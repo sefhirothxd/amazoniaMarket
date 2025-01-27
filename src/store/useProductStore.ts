@@ -4,6 +4,7 @@ import {
 	addProduct,
 	updateProduct,
 	deleteProduct,
+	getStores,
 } from '@/app/actions/productActions';
 
 type Product = {
@@ -12,13 +13,23 @@ type Product = {
 	description: string;
 	price: number;
 	stock: number;
+	image: string | null;
+	store_id: number;
+	store?: string;
+};
+
+type Store = {
+	id: number;
+	name: string;
 };
 
 type ProductStore = {
 	products: Product[];
+	stores: Store[];
 	isLoading: boolean;
 	error: string | null;
 	fetchProducts: () => Promise<void>;
+	fetchStores: () => Promise<void>;
 	addProduct: (product: Omit<Product, 'id'>) => Promise<void>;
 	updateProduct: (product: Product) => Promise<void>;
 	deleteProduct: (id: number) => Promise<void>;
@@ -26,6 +37,7 @@ type ProductStore = {
 
 export const useProductStore = create<ProductStore>((set) => ({
 	products: [],
+	stores: [],
 	isLoading: false,
 	error: null,
 	fetchProducts: async () => {
@@ -37,6 +49,19 @@ export const useProductStore = create<ProductStore>((set) => ({
 			set({
 				error:
 					error instanceof Error ? error.message : 'Failed to fetch products',
+				isLoading: false,
+			});
+		}
+	},
+	fetchStores: async () => {
+		set({ isLoading: true, error: null });
+		try {
+			const stores = await getStores();
+			set({ stores, isLoading: false });
+		} catch (error) {
+			set({
+				error:
+					error instanceof Error ? error.message : 'Failed to fetch stores',
 				isLoading: false,
 			});
 		}

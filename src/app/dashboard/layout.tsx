@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { ThemeProvider } from '@/components/theme-provider';
 import { supabase } from '@/lib/supabase';
-import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 
 export default function Page({ children }: { children: React.ReactNode }) {
@@ -28,11 +27,6 @@ export default function Page({ children }: { children: React.ReactNode }) {
 		checkSession();
 	}, [router]);
 
-	const handleLogout = async () => {
-		await supabase.auth.signOut();
-		router.push('/login');
-	};
-
 	// Mientras valida la sesión, muestra un estado de carga
 	if (loading) {
 		return <p>Loading...</p>;
@@ -47,10 +41,7 @@ export default function Page({ children }: { children: React.ReactNode }) {
 		>
 			<SidebarProvider>
 				<AppSidebar />
-				<SidebarInset>
-					<Button onClick={handleLogout}>Logout</Button>
-					{children}
-				</SidebarInset>
+				<SidebarInset>{children}</SidebarInset>
 			</SidebarProvider>
 		</ThemeProvider>
 	);

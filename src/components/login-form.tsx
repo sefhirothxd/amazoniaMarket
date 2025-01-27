@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
@@ -35,6 +35,19 @@ export function LoginForm() {
 		}
 		setLoading(false);
 	};
+
+	useEffect(() => {
+		const checkSession = async () => {
+			const { data } = await supabase.auth.getSession();
+
+			// Si no hay una sesión activa, redirige a la página de login
+			if (data.session) {
+				router.push('/dashboard');
+			}
+		};
+
+		checkSession();
+	}, [router]);
 
 	return (
 		<form onSubmit={handleLogin} className="space-y-4 ">

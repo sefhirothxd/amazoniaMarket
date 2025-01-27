@@ -1,12 +1,6 @@
 'use client';
 
-import {
-	BadgeCheck,
-	Bell,
-	ChevronsUpDown,
-	CreditCard,
-	LogOut,
-} from 'lucide-react';
+import { BadgeCheck, Bell, ChevronsUpDown, CreditCard } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -25,6 +19,9 @@ import {
 	useSidebar,
 } from '@/components/ui/sidebar';
 
+import { supabase } from '@/lib/supabase';
+import { useRouter } from 'next/navigation';
+
 export function NavUser({
 	user,
 }: {
@@ -35,6 +32,12 @@ export function NavUser({
 	};
 }) {
 	const { isMobile } = useSidebar();
+	const router = useRouter();
+
+	const handleLogout = async () => {
+		await supabase.auth.signOut();
+		router.push('/login');
+	};
 
 	return (
 		<SidebarMenu>
@@ -93,8 +96,12 @@ export function NavUser({
 						</DropdownMenuGroup>
 						<DropdownMenuSeparator />
 						<DropdownMenuItem>
-							<LogOut />
-							Log out
+							<button
+								onClick={handleLogout}
+								className="flex items-center w-full"
+							>
+								Log out
+							</button>
 						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>

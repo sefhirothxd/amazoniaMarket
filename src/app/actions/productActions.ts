@@ -14,15 +14,45 @@ type Product = {
 	price: number;
 	description: string;
 	stock: number;
+	image: string | null;
+	store_id: number;
+};
+
+type Store = {
+	id: number;
+	name: string;
 };
 
 // Obtener todos los productos
 export async function getProducts(): Promise<Product[]> {
-	const { data, error } = await supabase.from('products').select('*');
-	console.log('🚀 ~ getProducts ~ data:', data);
+	const { data, error } = await supabase
+		.from('products')
+		.select('*, store:store_id (name)');
+
 	if (error) {
 		console.error('Error fetching products:', error);
 		throw new Error('Error fetching products');
+	}
+
+	// Mapear los datos para devolverlos en el formato deseado
+	const formattedData = data.map((product) => ({
+		...product,
+		store: product.store.name, // Agregar el nombre de la tienda al objeto del producto
+	}));
+
+	console.log('🚀 ~ getProducts ~ data:', formattedData);
+
+	return formattedData || [];
+}
+
+//obtener nombre de las tiendas
+export async function getStores(): Promise<Store[]> {
+	const { data, error } = await supabase.from('store').select('*');
+	console.log('🚀 ~ getStores ~ data:', data);
+
+	if (error) {
+		console.error('Error fetching stores:', error);
+		throw new Error('Error fetching stores');
 	}
 
 	return data || [];
@@ -32,6 +62,12 @@ export async function getProducts(): Promise<Product[]> {
 export async function addProduct(
 	product: Omit<Product, 'id'>
 ): Promise<Product> {
+	const session = await supabase.auth.getSession();
+	const user = await supabase.auth.getUser();
+
+	console.log('🚀 ~ get session', session);
+	console.log('🚀 ~ get user', user);
+
 	const { data, error } = await supabase
 		.from('products')
 		.insert([product])
@@ -48,6 +84,8 @@ export async function addProduct(
 
 // Actualizar un producto existente
 export async function updateProduct(updatedProduct: Product): Promise<Product> {
+	console.log('Updating product with ID:', updatedProduct.id);
+	console.log('Product data:', updatedProduct);
 	const { data, error } = await supabase
 		.from('products')
 		.update({
@@ -55,6 +93,8 @@ export async function updateProduct(updatedProduct: Product): Promise<Product> {
 			price: updatedProduct.price,
 			description: updatedProduct.description,
 			stock: updatedProduct.stock,
+			image: updatedProduct.image,
+			store_id: updatedProduct.store_id,
 		})
 		.eq('id', updatedProduct.id)
 		.select()
@@ -63,6 +103,9 @@ export async function updateProduct(updatedProduct: Product): Promise<Product> {
 	if (error) {
 		console.error('Error updating product:', error);
 		throw new Error('Error updating product');
+	}
+	if (!data) {
+		throw new Error('Product not found');
 	}
 
 	return data!;
