@@ -3,8 +3,13 @@ import Image from 'next/image';
 
 const Banner = () => {
 	return (
-		<div className="relative bg-[#3D4543] text-white min-h-[600px]">
-			<Image src="/banner.jpg" alt="banner" layout="fill" objectFit="cover" />
+		<div className="relative bg-[#3D4543] text-white max-h-[600px] min-h-[300px] sm:[200px] md:h-[300px]  lg:h-[400px]  xl:h-[500px] w-full">
+			<Image
+				src="/banner.jpg"
+				alt="banner"
+				layout="fill"
+				className="object-fill w-full h-full"
+			/>
 			{/* <div className="container mx-auto px-4 pt-20 pb-32">
 				<div className="flex flex-col  relative justify-center  max-w-screen-xl mx-auto  "> */}
 			{/* Navigation Arrows */}
@@ -30,7 +35,7 @@ const Banner = () => {
 			</div> */}
 
 			{/* Wave SVG */}
-			<div className="absolute bottom-0 left-0 w-full">
+			<div className="absolute bottom-0 left-0 w-full hidden md:block">
 				<svg
 					viewBox="0 0 1440 120"
 					fill="none"
