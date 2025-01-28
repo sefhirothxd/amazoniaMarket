@@ -412,7 +412,7 @@ function ProductForm({ product, onSave }: ProductFormProps) {
 						<SelectGroup>
 							{stores.map((store) => (
 								<SelectItem key={store.id} value={store.id.toString()}>
-									<SelectLabel>{store.name}</SelectLabel>
+									<SelectLabel className="capitalize">{store.name}</SelectLabel>
 								</SelectItem>
 							))}
 						</SelectGroup>

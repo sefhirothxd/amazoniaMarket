@@ -3,11 +3,9 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { ToastAction } from '@/components/ui/toast';
+import Image from 'next/image';
 
 export function LoginForm() {
 	const [email, setEmail] = useState('');
@@ -50,30 +48,56 @@ export function LoginForm() {
 	}, [router]);
 
 	return (
-		<form onSubmit={handleLogin} className="space-y-4 ">
-			<div>
-				<Label htmlFor="email">Email</Label>
-				<Input
-					id="email"
-					type="email"
-					value={email}
-					onChange={(e) => setEmail(e.target.value)}
-					required
-				/>
+		<div className="min-h-screen flex items-center justify-start w-full bg-white">
+			<div className="bg-white p-8 rounded-lg w-full max-w-[500px] flex flex-col justify-between h-screen">
+				<div></div>
+				<form onSubmit={handleLogin} className="space-y-6">
+					<h1 className="text-[35px] font-bold  mb-[55px] text-black ">
+						Visítanos y compra tus productos favoritos
+					</h1>
+					<div>
+						<input
+							placeholder="Correo electrónico"
+							id="email"
+							type="email"
+							value={email}
+							onChange={(e) => setEmail(e.target.value)}
+							required
+							className="mt-1 block w-full px-3 py-2 border bg-gray-100 text-black border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+						/>
+					</div>
+					<div>
+						<input
+							placeholder="Contraseña"
+							id="password"
+							type="password"
+							value={password}
+							onChange={(e) => setPassword(e.target.value)}
+							required
+							className="mt-1 block w-full px-3 py-2 border bg-gray-100 text-black border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+						/>
+					</div>
+					<button
+						type="submit"
+						disabled={loading}
+						className="w-full flex justify-center py-2 px-4 border border-transparent rounded-[15px] shadow-sm text-[28px] font-medium text-white bg-[#EA0029] hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+					>
+						{loading ? 'Cargando...' : 'Acceder'}
+					</button>
+					<div className="text-center">
+						<a
+							href="#"
+							className="text-sm text-[#717171]  hover:text-gey-700 hover:underline"
+						>
+							¿Olvidaste tu contraseña?
+						</a>
+					</div>
+				</form>
+				<div className="flex justify-center items-center  gap-1 mt-6 text-center text-sm text-gray-500">
+					<Image src="/advertencia.svg" alt="Logo" width={33} height={33} />
+					<label htmlFor="developer">Desarrollado por Skillien.com</label>
+				</div>
 			</div>
-			<div>
-				<Label htmlFor="password">Password</Label>
-				<Input
-					id="password"
-					type="password"
-					value={password}
-					onChange={(e) => setPassword(e.target.value)}
-					required
-				/>
-			</div>
-			<Button type="submit" disabled={loading}>
-				{loading ? 'Loading...' : 'Log In'}
-			</Button>
-		</form>
+		</div>
 	);
 }
