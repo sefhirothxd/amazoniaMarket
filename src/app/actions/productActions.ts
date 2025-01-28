@@ -12,8 +12,8 @@ type Product = {
 	id: number;
 	name: string;
 	price: number;
-	description: string;
-	stock: number;
+	marca: string;
+	medida: string;
 	image: string | null;
 	store_id: number;
 };
@@ -91,8 +91,8 @@ export async function updateProduct(updatedProduct: Product): Promise<Product> {
 		.update({
 			name: updatedProduct.name,
 			price: updatedProduct.price,
-			description: updatedProduct.description,
-			stock: updatedProduct.stock,
+			marca: updatedProduct.marca,
+			medida: updatedProduct.medida,
 			image: updatedProduct.image,
 			store_id: updatedProduct.store_id,
 		})

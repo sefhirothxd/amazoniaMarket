@@ -113,7 +113,7 @@ const Formulario = () => {
 							{...register('telefono', {
 								required: 'Este campo es obligatorio',
 								pattern: {
-									value: /^[0-9]{10}$/,
+									value: /^[0-9]{9}$/,
 									message: 'Teléfono no válido (debe tener 10 dígitos)',
 								},
 							})}

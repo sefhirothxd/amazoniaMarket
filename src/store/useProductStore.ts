@@ -10,9 +10,9 @@ import {
 type Product = {
 	id: number;
 	name: string;
-	description: string;
+	marca: string;
 	price: number;
-	stock: number;
+	medida: string;
 	image: string | null;
 	store_id: number;
 	store?: string;

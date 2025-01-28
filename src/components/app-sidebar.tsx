@@ -3,9 +3,9 @@
 import * as React from 'react';
 import {
 	Package,
-	SquareStack,
-	Box,
-	Settings2,
+	// SquareStack,
+	// Box,
+	// Settings2,
 	Home,
 	Moon,
 	Sun,
@@ -44,21 +44,21 @@ const data = {
 			url: '/dashboard/productos/agregar',
 			icon: Package,
 		},
-		{
-			title: 'Categorías',
-			url: '/dashboard/categorias',
-			icon: SquareStack,
-		},
-		{
-			title: 'Inventario',
-			url: '/dashboard/inventario',
-			icon: Box,
-		},
-		{
-			title: 'Configuración',
-			url: '/dashboard/configuracion',
-			icon: Settings2,
-		},
+		// {
+		// 	title: 'Categorías',
+		// 	url: '/dashboard/categorias',
+		// 	icon: SquareStack,
+		// },
+		// {
+		// 	title: 'Inventario',
+		// 	url: '/dashboard/inventario',
+		// 	icon: Box,
+		// },
+		// {
+		// 	title: 'Configuración',
+		// 	url: '/dashboard/configuracion',
+		// 	icon: Settings2,
+		// },
 	],
 };
 

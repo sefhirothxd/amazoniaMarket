@@ -9,9 +9,6 @@ export async function middleware(req: NextRequest) {
 	const sessionData = await supabase.auth.getSession();
 	const session = sessionData.data?.session; // Acceder a la sesión desde data
 
-	console.log('Datos de sesión:', sessionData); // Registrar para depurar
-	console.log('Respuesta:', res); // Registrar para depurar
-
 	if (session && req.nextUrl.pathname.startsWith('/dashboard')) {
 		const redirectUrl = req.nextUrl.clone();
 		redirectUrl.pathname = '/login';

@@ -81,12 +81,14 @@ const Productos = () => {
 							className=" object-cover h-[184px] rounded-[15px]"
 						/>
 						<div className="leading-6 mt-2">
-							<p className="text-[16px] text-[#7C7C7C] font-semibold">shambo</p>
+							<p className="text-[16px] text-[#7C7C7C] font-semibold">
+								{item.marca}
+							</p>
 							<p className="text-[22px] text-[#000] font-semibold">
 								{item.name}
 							</p>
 							<p className="text-[16px] text-[#000] font-semibold">
-								{item.description}
+								{item.medida}
 							</p>
 						</div>
 						<div className="flex justify-between mt-4">

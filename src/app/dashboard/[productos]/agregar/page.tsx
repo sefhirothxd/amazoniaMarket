@@ -24,7 +24,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useProductStore } from '@/store/useProductStore';
 import { toast } from '@/hooks/use-toast';
-import { Textarea } from '@/components/ui/textarea';
 import { createClient } from '@supabase/supabase-js';
 import {
 	Select,
@@ -40,9 +39,9 @@ import Image from 'next/image';
 type Product = {
 	id: number;
 	name: string;
-	description: string;
+	marca: string;
 	price: number;
-	stock: number;
+	medida: string;
 	image: string | null;
 	store_id: number;
 	store?: string;
@@ -67,8 +66,26 @@ function ProductList() {
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 	const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
-	const handleDelete = async (id: number) => {
-		await deleteProduct(id);
+	const handleDelete = async (product: Product) => {
+		try {
+			//delete image from storage
+			const name = product.name.replace(/\s+/g, '');
+			await supabase.storage.from('amazonia').remove([name]);
+
+			await deleteProduct(product.id);
+
+			// Muestra un mensaje de éxito
+			toast({
+				duration: 2000,
+				title: 'Producto eliminado',
+				description: 'El producto se ha eliminado correctamente.',
+			});
+		} catch (error) {
+			console.log(
+				'🚀 ~ file: page.tsx ~ line 116 ~ handleDelete ~ error',
+				error
+			);
+		}
 	};
 
 	const handleEdit = (product: Product) => {
@@ -78,27 +95,41 @@ function ProductList() {
 
 	const handleSave = async (updatedProduct: Product) => {
 		try {
+			//delete image from storage
+			const name = updatedProduct.name.replace(/\s+/g, '');
+			await supabase.storage.from('amazonia').remove([name]);
+
+			// Sube la nueva imagen
 			await supabase.storage
 				.from('amazonia')
-				.upload(updatedProduct.name, updatedProduct.image!, {
+				.upload(name, updatedProduct.image!, {
 					upsert: true,
 				});
+
+			// Obtén la URL pública de la imagen
 			const { data } = await supabase.storage
 				.from('amazonia')
-				.getPublicUrl(updatedProduct.name);
+				.getPublicUrl(name);
 
+			// Actualiza el producto con la nueva URL de la imagen
 			updatedProduct.image = data.publicUrl;
-
 			await updateProduct(updatedProduct);
+
+			// Cierra el diálogo de edición y limpia el estado
 			setIsEditDialogOpen(false);
 			setEditingProduct(null);
+
+			// Muestra un mensaje de éxito
 			toast({
+				duration: 2000,
 				title: 'Producto actualizado',
 				description: 'El producto se ha actualizado correctamente.',
 			});
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (error) {
+			// Muestra un mensaje de error
 			toast({
+				duration: 2000,
 				title: 'Error',
 				description: 'No se pudo actualizar el producto.',
 				variant: 'destructive',
@@ -110,12 +141,12 @@ function ProductList() {
 		try {
 			await supabase.storage
 				.from('amazonia')
-				.upload(newProduct.name, newProduct.image!, {
+				.upload(newProduct.name.replace(/\s+/g, ''), newProduct.image!, {
 					upsert: true,
 				});
 			const { data } = await supabase.storage
 				.from('amazonia')
-				.getPublicUrl(newProduct.name);
+				.getPublicUrl(newProduct.name.replace(/\s+/g, ''));
 
 			newProduct.image = data.publicUrl;
 
@@ -172,13 +203,13 @@ function ProductList() {
 								Nombre
 							</TableHead>
 							<TableHead className="text-foreground dark:text-gray-300">
-								Descripcion
+								Marca
 							</TableHead>
 							<TableHead className="text-foreground dark:text-gray-300">
 								Precio
 							</TableHead>
 							<TableHead className="text-foreground dark:text-gray-300">
-								Stock
+								Medida
 							</TableHead>
 							<TableHead className="text-foreground dark:text-gray-300">
 								Imagen
@@ -198,13 +229,13 @@ function ProductList() {
 									{product.name}
 								</TableCell>
 								<TableCell className="text-foreground dark:text-gray-300">
-									{product.description}
+									{product.marca}
 								</TableCell>
 								<TableCell className="text-foreground dark:text-gray-300">
 									${product.price.toFixed(2)}
 								</TableCell>
 								<TableCell className="text-foreground dark:text-gray-300">
-									{product.stock}
+									{product.medida}
 								</TableCell>
 								<TableCell className="text-foreground dark:text-gray-300">
 									{product.image ? (
@@ -216,7 +247,7 @@ function ProductList() {
 											height={32}
 										/>
 									) : (
-										'No disponible'
+										<div className="h-8 w-8 bg-slate-700"></div>
 									)}
 								</TableCell>
 								<TableCell className="text-foreground dark:text-gray-300">
@@ -257,7 +288,7 @@ function ProductList() {
 										<Button
 											variant="outline"
 											size="sm"
-											onClick={() => handleDelete(product.id)}
+											onClick={() => handleDelete(product)}
 										>
 											<Trash2 className="h-4 w-4" />
 										</Button>
@@ -293,8 +324,8 @@ function ProductForm({ product, onSave }: ProductFormProps) {
 		product || {
 			name: '',
 			price: 0,
-			stock: 0,
-			description: '',
+			marca: '',
+			medida: '',
 			image: null as File | null,
 			//store selected input
 			store_id: 0,
@@ -342,15 +373,12 @@ function ProductForm({ product, onSave }: ProductFormProps) {
 			</div>
 			<div>
 				<Label htmlFor="stock" className="text-foreground dark:text-gray-300">
-					Stock
+					Marca
 				</Label>
 				<Input
-					id="stock"
-					type="number"
-					value={formData.stock || ''}
-					onChange={(e) =>
-						setFormData({ ...formData, stock: parseInt(e.target.value) })
-					}
+					id="marca"
+					value={formData.marca}
+					onChange={(e) => setFormData({ ...formData, marca: e.target.value })}
 					required
 					className="bg-background dark:bg-gray-700 text-foreground dark:text-gray-300"
 				/>
@@ -360,15 +388,13 @@ function ProductForm({ product, onSave }: ProductFormProps) {
 					htmlFor="description"
 					className="text-foreground dark:text-gray-300"
 				>
-					Descripción
+					Medida
 				</Label>
-				<Textarea
+				<Input
 					id="description"
 					required
-					value={formData.description}
-					onChange={(e) =>
-						setFormData({ ...formData, description: e.target.value })
-					}
+					value={formData.medida}
+					onChange={(e) => setFormData({ ...formData, medida: e.target.value })}
 					className="bg-background dark:bg-gray-700 text-foreground dark:text-gray-300"
 				/>
 			</div>
@@ -379,7 +405,7 @@ function ProductForm({ product, onSave }: ProductFormProps) {
 						(value) => setFormData({ ...formData, store_id: Number(value) }) // Manejar el cambio del valor seleccionado
 					}
 				>
-					<SelectTrigger className="w-[180px]">
+					<SelectTrigger className="w-[200px]">
 						<SelectValue placeholder="Selecciona una tienda" />
 					</SelectTrigger>
 					<SelectContent>
