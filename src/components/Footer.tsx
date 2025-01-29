@@ -21,6 +21,16 @@ export const Footer = () => {
 					></path>
 				</svg>
 			</div>
+			{/* Wave SVG */}
+			{/* <div className="absolute -top-[50px] left-0 w-full hidden md:block">
+				<Image
+					src="/ondasMarca.svg"
+					alt="wave"
+					layout="responsive"
+					width={1440}
+					height={100}
+				/>
+			</div> */}
 
 			<div className="container mx-auto px-4">
 				<div className="flex justify-center items-center flex-col mx-auto text-[20px] lg:text-[25px] font-semibold ">

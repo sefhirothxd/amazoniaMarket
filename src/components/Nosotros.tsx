@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 const Nosotros = () => {
 	return (
-		<div className="py-[92px] w-full flex justify-center relative hojas h-auto">
+		<div className="py-[92px] w-full flex justify-center relative hojas h-auto ">
 			{/* <div className="absolute bottom-0  m-0 left-0 w-full h-full">
 				<Image
 					src={'/hojas.svg'}
@@ -14,7 +14,7 @@ const Nosotros = () => {
 				/>
 			</div> */}
 			<div className="flex justify-center items-center p-3 sm:p-[52px] rounded-[73px] ">
-				<div className="flex justify-center items-center gap-[44px] h-auto lg:h-[550px] lg:flex-nowrap flex-wrap-reverse">
+				<div className="flex justify-center items-center gap-[44px] h-auto lg:h-[480px] lg:flex-nowrap flex-wrap-reverse">
 					<div className="sm:w-[400px] w-full h-full rounded-lg flex flex-col justify-end items-center">
 						<Image
 							className="object-cover w-full h-[480px] rounded-lg"
@@ -23,11 +23,11 @@ const Nosotros = () => {
 							width={400}
 							height={480}
 						/>
-						<div className="flex gap-2 mt-[12px] items-center justify-center">
+						{/* <div className="flex gap-2 mt-[12px] items-center justify-center">
 							<div className="bg-[#000] w-[41px] h-[10px] rounded-[20px]"></div>
 							<div className="bg-[#ECECEC] w-[41px] h-[10px] rounded-[20px]"></div>
 							<div className="bg-[#ECECEC] w-[41px] h-[10px] rounded-[20px]"></div>
-						</div>
+						</div> */}
 					</div>
 					<div className="font-semibold max-w-[550px]">
 						<span className="text-[25px] bg-[#EA0029] py-[4px] px-[15px] rounded-xl text-white">
@@ -72,6 +72,16 @@ const Nosotros = () => {
 						</div>
 					</div>
 				</div>
+			</div>
+			{/* Wave SVG */}
+			<div className="absolute -bottom-[40px] left-0 w-full hidden md:block">
+				<Image
+					src="/nosotrosOndas.svg"
+					alt="wave"
+					layout="responsive"
+					width={1440}
+					height={100}
+				/>
 			</div>
 		</div>
 	);

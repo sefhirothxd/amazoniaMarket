@@ -38,8 +38,18 @@ const stores = [
 
 export default function StoreCarousel() {
 	return (
-		<div className="w-full flex flex-col justify-center items-center  mx-auto px-4 py-8 mb-20">
-			<h2 className="text-[45px] font-semibold text-center">
+		<div className="w-full flex flex-col justify-center items-center  mx-auto px-4 py-8 mb-20 relative">
+			{/* Wave SVG */}
+			<div className="absolute sm:h-[120px]  -top-[50px] left-0 w-full hidden md:block">
+				<Image
+					src="/bannerVector.svg"
+					alt="wave"
+					layout="responsive"
+					width={1440}
+					height={100}
+				/>
+			</div>
+			<h2 className="text-[45px] font-semibold text-center pt-[70px]">
 				Nuestras Tiendas
 			</h2>
 			{stores.map(({ id, name, location, tags, map }) => (

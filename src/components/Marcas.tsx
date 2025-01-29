@@ -33,7 +33,7 @@ const marcas = {
 
 const Marcas = () => {
 	return (
-		<div className="bg-[#D5E8D7] pb-[200px] pt-[30px]">
+		<div className="bg-[#D5E8D7] pb-[200px] pt-[30px] relative">
 			<div className="text-center mb-[57px]">
 				<h3 className="font-semibold text-[45px]">Nuestras marcas</h3>
 				<p className="font-semibold text-[25px]">

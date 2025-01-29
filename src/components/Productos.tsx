@@ -20,7 +20,7 @@ const Productos = () => {
 					Visitanos y compra tus productos favoritos
 				</span>
 			</div>
-			<div className="flex justify-center items-center gap-[21px] flex-wrap md:flex-nowrap">
+			{/* <div className="flex justify-center items-center gap-[21px] flex-wrap md:flex-nowrap">
 				<div className="bg-white py-[19px] px-[8] rounded-[20px] w-[210px] h-[58px] flex justify-center">
 					<Image
 						height={50}
@@ -66,7 +66,7 @@ const Productos = () => {
 						className=" object-cover"
 					/>
 				</div>
-			</div>
+			</div> */}
 			<div className="flex justify-center items-center gap-4 flex-wrap mt-[77px] max-w-[1200px] mx-auto ">
 				{products.map((item) => (
 					<div

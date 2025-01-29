@@ -63,22 +63,33 @@ const Formulario = () => {
 	};
 
 	return (
-		<div className="pb-[80px] bg-gradient-to-t from-[#D5E8D7] from-50% to-[#fff] to-50%">
-			<div className="bg-[#EDEDED] flex-wrap md:flex-nowrap flex justify-center items-center py-10 max-w-[1070px] h-auto md:h-[650px] mx-auto gap-[32px] lg:gap-[62px] p-[25px] lg:p-[50px] rounded-[45px]">
+		<div className="pb-[80px] bg-gradient-to-t from-[#D5E8D7] from-50% to-[#fff] to-50% relative">
+			{/* Wave SVG */}
+			<div className="absolute bottom-[45%] left-0 w-full hidden md:block z-0">
+				<Image
+					src="/nosotrosOndas.svg"
+					alt="wave"
+					layout="responsive"
+					width={1440}
+					height={100}
+					className="z-0"
+				/>
+			</div>
+			<div className="bg-[#EDEDED] flex-wrap md:flex-nowrap flex justify-center items-center py-10 max-w-[1070px] h-auto md:h-[650px] mx-auto gap-[32px] lg:gap-[62px] p-[25px] lg:p-[50px] rounded-[45px] relative z-10">
 				<Image
 					src="/formulario.jpg"
 					alt="formulario"
 					width={454}
 					height={557}
-					className="rounded-[25px] lg:w-[454px] lg:h-[557px] w-[300px] h-[400px] object-cover"
+					className="rounded-[25px] lg:w-[454px] lg:h-[557px] w-[300px] h-[400px] object-cover z-10"
 				/>
-				<div className="flex flex-col">
+				<div className="flex flex-col z-10">
 					<h3 className="lg:text-[35px] text-[28px] font-bold mb-[30px] text-center">
 						Dinos cómo podemos ayudarte
 					</h3>
 					<form
 						onSubmit={handleSubmit(onSubmit)}
-						className="flex flex-col gap-[15px] w-full"
+						className="flex flex-col gap-[15px] w-full "
 					>
 						<input
 							type="text"
