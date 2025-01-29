@@ -63,7 +63,10 @@ const Formulario = () => {
 	};
 
 	return (
-		<div className="pb-[80px] bg-gradient-to-t from-[#D5E8D7] from-50% to-[#fff] to-50% relative">
+		<div
+			id="contacto"
+			className="pb-[80px] bg-gradient-to-t from-[#D5E8D7] from-50% to-[#fff] to-50% relative"
+		>
 			{/* Wave SVG */}
 			<div className="absolute bottom-[45%] left-0 w-full hidden md:block z-0">
 				<Image

@@ -1,7 +1,31 @@
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export const Header = () => {
+	const menuItems = [
+		{
+			title: 'Nosotros',
+			url: '#nosotros',
+		},
+		{
+			title: 'Productos',
+			url: '#productos',
+		},
+		{
+			title: 'Tiendas',
+			url: '#tiendas',
+		},
+		// {
+		// 	title: 'Marcas',
+		// 	url: '#marcas',
+		// },
+		{
+			title: 'Contacto',
+			url: '#contacto',
+		},
+	];
+
 	return (
 		<div className="flex justify-center w-full text-lg">
 			<nav className="max-w-screen-xl w-full py-[22px] flex justify-between items-center px-2">
@@ -13,10 +37,11 @@ export const Header = () => {
 				/>
 				<div className="hidden sm:block">
 					<ul className="flex justify-between items-center lg:gap-[49px] gap-[30px] font-semibold">
-						<li>Productos</li>
-						<li>Tiendas</li>
-						<li>Nosotros</li>
-						<li>Contácta</li>
+						{menuItems.map((item, index) => (
+							<li key={index}>
+								<Link href={item.url}>{item.title}</Link>
+							</li>
+						))}
 					</ul>
 				</div>
 				<div>

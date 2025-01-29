@@ -38,7 +38,10 @@ const stores = [
 
 export default function StoreCarousel() {
 	return (
-		<div className="w-full flex flex-col justify-center items-center  mx-auto px-4 py-8 mb-20 relative">
+		<div
+			id="tiendas"
+			className="w-full flex flex-col justify-center items-center  mx-auto px-4 py-8 mb-20 relative"
+		>
 			{/* Wave SVG */}
 			<div className="absolute sm:h-[120px]  -top-[50px] left-0 w-full hidden md:block">
 				<Image

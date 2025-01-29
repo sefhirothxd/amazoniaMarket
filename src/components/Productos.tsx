@@ -13,7 +13,7 @@ const Productos = () => {
 	}, [fetchProducts]);
 
 	return (
-		<div className="bg-[#D5E8D7] py-[106px]">
+		<div id="productos" className="bg-[#D5E8D7] py-[106px] hojas">
 			<div className="text-center  mb-[55px] font-semibold">
 				<h2 className="md:text-[45px] text-[35px] ">Nuestros Productos</h2>
 				<span className="md:text-[25px] text-[20px] ">

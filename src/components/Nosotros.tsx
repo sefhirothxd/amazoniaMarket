@@ -3,7 +3,10 @@ import Image from 'next/image';
 
 const Nosotros = () => {
 	return (
-		<div className="py-[92px] w-full flex justify-center relative hojas h-auto ">
+		<div
+			id="nosotros"
+			className="py-[92px] w-full flex justify-center relative h-auto "
+		>
 			{/* <div className="absolute bottom-0  m-0 left-0 w-full h-full">
 				<Image
 					src={'/hojas.svg'}
