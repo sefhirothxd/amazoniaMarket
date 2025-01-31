@@ -77,7 +77,7 @@ const Nosotros = () => {
 				</div>
 			</div>
 			{/* Wave SVG */}
-			<div className="absolute -bottom-[40px] left-0 w-full hidden md:block">
+			<div className="absolute md:-bottom-[40px]  -bottom-[20px] left-0 w-full block">
 				<Image
 					src="/nosotrosOndas.svg"
 					alt="wave"

@@ -6,7 +6,8 @@
 		"dev": "next dev --turbo",
 		"build": "next build",
 		"start": "next start",
-		"lint": "next lint"
+		"lint": "next lint",
+		"export": "next build && next export"
 	},
 	"dependencies": {
 		"@emailjs/browser": "^4.4.1",

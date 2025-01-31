@@ -48,11 +48,11 @@ export function LoginForm() {
 	}, [router]);
 
 	return (
-		<div className="min-h-screen flex items-center justify-start w-full bg-white">
-			<div className="bg-white p-8 rounded-lg w-full max-w-[500px] flex flex-col justify-between h-screen">
+		<div className=" flex justify-center lg:justify-between w-full bg-white h-screen">
+			<div className="bg-white p-8 rounded-lg w-full max-w-[500px] flex flex-col justify-between">
 				<div></div>
 				<form onSubmit={handleLogin} className="space-y-6">
-					<h1 className="text-[35px] font-bold  mb-[55px] text-black ">
+					<h1 className="text-[30px] text-center md:text-left md:text-[35px] font-bold  mb-[55px] text-black ">
 						Visítanos y compra tus productos favoritos
 					</h1>
 					<div>
@@ -80,7 +80,7 @@ export function LoginForm() {
 					<button
 						type="submit"
 						disabled={loading}
-						className="w-full flex justify-center py-2 px-4 border border-transparent rounded-[15px] shadow-sm text-[28px] font-medium text-white bg-[#EA0029] hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+						className="w-full flex justify-center py-2 px-4 border border-transparent rounded-[15px] shadow-sm text-[22px] md:text-[28px] font-medium text-white bg-[#EA0029] hover:bg-red-800 transition-all  focus:outline-none focus:ring-2 focus:ring-offset-2"
 					>
 						{loading ? 'Cargando...' : 'Acceder'}
 					</button>
@@ -95,8 +95,26 @@ export function LoginForm() {
 				</form>
 				<div className="flex justify-center items-center  gap-1 mt-6 text-center text-sm text-gray-500">
 					<Image src="/advertencia.svg" alt="Logo" width={33} height={33} />
-					<label htmlFor="developer">Desarrollado por Skillien.com</label>
+					<label htmlFor="developer">
+						Desarrollado por
+						<a
+							href="https://skillien.com"
+							target="_blank"
+							className="hover:underline ml-1"
+						>
+							Skillien.com
+						</a>
+					</label>
 				</div>
+			</div>
+			<div className="hidden lg:block w-full h-full rounded-l-[45px] overflow-hidden ">
+				<Image
+					src="/fondoLogin.webp"
+					alt="Logo"
+					width={500}
+					height={500}
+					className="w-full h-full object-cover"
+				/>
 			</div>
 		</div>
 	);

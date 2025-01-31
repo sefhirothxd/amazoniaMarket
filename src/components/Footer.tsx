@@ -5,9 +5,9 @@ import Link from 'next/link';
 
 export const Footer = () => {
 	return (
-		<footer className="bg-[#679B6A] text-white relative pt-16 pb-[121px] w-full">
+		<footer className="bg-[#679B6A] text-white relative pt-[200px] pb-[121px] w-full ">
 			{/* Wavy border */}
-			<div className="absolute top-[-100px] left-0 w-full">
+			{/* <div className="absolute top-[-100px] left-0 w-full">
 				<svg
 					id="svg"
 					viewBox="0 0 1440 390"
@@ -20,9 +20,9 @@ export const Footer = () => {
 						fill="#679b6a"
 					></path>
 				</svg>
-			</div>
+			</div> */}
 			{/* Wave SVG */}
-			{/* <div className="absolute -top-[50px] left-0 w-full hidden md:block">
+			<div className="absolute -top-0  md:-top-[30px] left-0 w-full block">
 				<Image
 					src="/ondasMarca.svg"
 					alt="wave"
@@ -30,7 +30,7 @@ export const Footer = () => {
 					width={1440}
 					height={100}
 				/>
-			</div> */}
+			</div>
 
 			<div className="container mx-auto px-4">
 				<div className="flex justify-center items-center flex-col mx-auto text-[20px] lg:text-[25px] font-semibold ">
@@ -153,7 +153,7 @@ export const Footer = () => {
 				</div>
 			</div>
 			<Image
-				className="absolute bottom-0 left-0 w-full h-full object-center object-cover"
+				className="absolute bottom-0 left-0 md:w-full md:h-full md:object-fill w-full object-bottom h-auto object-contain"
 				src="/arbolitos.svg"
 				alt="footer"
 				width={100}

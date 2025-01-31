@@ -8,7 +8,19 @@ const Banner = () => {
 				src="/bannerNuevo.webp"
 				alt="banner"
 				layout="fill"
-				className="object-fill w-full h-auto"
+				className="object-fill w-full h-auto lg:block hidden"
+			/>
+			<Image
+				src="/bannerTablet.webp"
+				alt="banner"
+				layout="fill"
+				className="object-cover w-full h-auto block lg:hidden"
+			/>
+			<Image
+				src="/bannerMovil.webp"
+				alt="banner"
+				layout="fill"
+				className="object-cover w-full h-auto block sm:hidden"
 			/>
 			{/* <div className="container mx-auto px-4 pt-20 pb-32">
 				<div className="flex flex-col  relative justify-center  max-w-screen-xl mx-auto  "> */}
@@ -35,7 +47,7 @@ const Banner = () => {
 			</div> */}
 
 			{/* Wave SVG */}
-			<div className="absolute -bottom-[200px] lg:-bottom-[40px] left-0 w-full hidden md:block">
+			<div className="absolute lg:-bottom-[40px] md:-bottom-[30px] sm:-bottom-[20px]   -bottom-[10px] left-0 w-full block">
 				<Image
 					src="/bannerVector.svg"
 					alt="wave"

@@ -10,6 +10,7 @@ const stores = [
 			'KM. 7 OTR. Carretera Pastora - La Joya - Madre De Dios - Tambopata',
 		tags: ['Sala de embarque', 'sala principal'],
 		map: 'https://maps.app.goo.gl/EqLgmYXyjnhEVsFJ9',
+		image: '/puertoMaldonado.jpg',
 	},
 	{
 		id: 2,
@@ -18,6 +19,7 @@ const stores = [
 			'Aeropuerto Internacional Capitan FAP Jose Abelardo Quiñonez Gonzales',
 		tags: ['Sala de embarque', 'sala principal'],
 		map: 'https://maps.app.goo.gl/cM1ssnwhjRQY63R27',
+		image: '/iquitos.jpg',
 	},
 	{
 		id: 3,
@@ -25,6 +27,7 @@ const stores = [
 		location: 'Jr. Jorge Chavez Nro. 1899 San Martin - San Martin ',
 		tags: ['Sala de embarque', 'sala principal'],
 		map: 'https://maps.app.goo.gl/YSrS5UKosmAZk2BX8',
+		image: '/tarapoto.jpg',
 	},
 	{
 		id: 4,
@@ -33,6 +36,7 @@ const stores = [
 			'OTR.CAR. Federico Basadre KM. 5.5 Ucayali - Coronel Portillo - Calleria',
 		tags: ['Sala de embarque', 'sala principal'],
 		map: 'https://maps.app.goo.gl/TZxipvkgsqN2zmtV7',
+		image: '/pucallpa.jpg',
 	},
 ];
 
@@ -43,7 +47,7 @@ export default function StoreCarousel() {
 			className="w-full flex flex-col justify-center items-center  mx-auto px-4 py-8 mb-20 relative"
 		>
 			{/* Wave SVG */}
-			<div className="absolute sm:h-[120px]  -top-[50px] left-0 w-full hidden md:block">
+			<div className="absolute sm:h-[120px] -top-[20px]  md:-top-[50px] left-0 w-full block">
 				<Image
 					src="/bannerVector.svg"
 					alt="wave"
@@ -55,14 +59,14 @@ export default function StoreCarousel() {
 			<h2 className="text-[45px] font-semibold text-center pt-[70px]">
 				Nuestras Tiendas
 			</h2>
-			{stores.map(({ id, name, location, tags, map }) => (
+			{stores.map(({ id, name, location, tags, map, image }) => (
 				<div
 					key={id}
 					className="bg-[#EDEDED] flex justify-start h-auto lg:h-[286px] w-full max-w-[930px] items-center gap-[25px] lg:gap-[38px] mt-8 p-4 rounded-[20px] 
 					flex-wrap sm:flex-nowrap					"
 				>
 					<Image
-						src="/tienda.jpg"
+						src={image}
 						alt="store"
 						width={325}
 						height={252}
