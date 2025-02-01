@@ -71,6 +71,7 @@ export default function StoreCarousel() {
 						width={325}
 						height={252}
 						className="object-cover lg:w-[325px] lg:h-[252px] rounded-[10px] w-[325px] h-[252px] mx-auto sm:mx-0"
+						quality={100}
 					/>
 					<div className="flex flex-col gap-4 w-full">
 						<div className="flex justify-between lg:items-center sm:flex-col-reverse sm:items-start sm:gap-2 lg:gap-0  lg:flex-row">

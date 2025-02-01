@@ -27,7 +27,8 @@ type Store = {
 export async function getProducts(): Promise<Product[]> {
 	const { data, error } = await supabase
 		.from('products')
-		.select('*, store:store_id (name)');
+		.select('*, store:store_id (name)')
+		.order('name', { ascending: false });
 
 	if (error) {
 		console.error('Error fetching products:', error);

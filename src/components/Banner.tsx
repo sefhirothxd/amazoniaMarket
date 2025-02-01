@@ -5,22 +5,25 @@ const Banner = () => {
 	return (
 		<div className="relative bg-[#3D4543] text-white  min-h-[300px] sm:[200px] md:h-[400px]  lg:h-[500px]  xl:h-[600px] 2xl:h-[700px] w-full">
 			<Image
-				src="/bannerNuevo.webp"
+				src="/bannerDesktop.png"
 				alt="banner"
 				layout="fill"
 				className="object-fill w-full h-auto lg:block hidden"
+				quality={100}
 			/>
 			<Image
-				src="/bannerTablet.webp"
+				src="/bannerTablet.png"
 				alt="banner"
 				layout="fill"
 				className="object-cover w-full h-auto block lg:hidden"
+				quality={100}
 			/>
 			<Image
-				src="/bannerMovil.webp"
+				src="/bannerMovil.png"
 				alt="banner"
 				layout="fill"
 				className="object-cover w-full h-auto block sm:hidden"
+				quality={100}
 			/>
 			{/* <div className="container mx-auto px-4 pt-20 pb-32">
 				<div className="flex flex-col  relative justify-center  max-w-screen-xl mx-auto  "> */}

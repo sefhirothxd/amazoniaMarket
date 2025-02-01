@@ -69,6 +69,7 @@ const Productos = () => {
 							src={item.image!}
 							alt="imagen de producto"
 							className="object-cover h-[184px] rounded-[15px]"
+							quality={100}
 						/>
 						<div className="leading-6 mt-2">
 							<p className="text-[16px] text-[#7C7C7C] font-semibold">

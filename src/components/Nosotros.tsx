@@ -22,9 +22,10 @@ const Nosotros = () => {
 						<Image
 							className="object-cover w-full h-[480px] rounded-lg"
 							src="/nosotros.png"
-							alt=""
+							alt="foto de la tienda"
 							width={400}
 							height={480}
+							quality={100}
 						/>
 						{/* <div className="flex gap-2 mt-[12px] items-center justify-center">
 							<div className="bg-[#000] w-[41px] h-[10px] rounded-[20px]"></div>
