@@ -95,35 +95,56 @@ function ProductList() {
 		setIsEditDialogOpen(true);
 	};
 
+	const handleAdd = async (newProduct: Omit<Product, 'id'>) => {
+		try {
+			const nameSanitized = sanitizeFileName(newProduct.name);
+
+			// Sube la nueva imagen si existe
+			if (newProduct.image && typeof newProduct.image !== 'string') {
+				await supabase.storage
+					.from('amazonia')
+					.upload(nameSanitized.replace(/\s+/g, ''), newProduct.image, {
+						upsert: true,
+					});
+				const { data } = await supabase.storage
+					.from('amazonia')
+					.getPublicUrl(nameSanitized.replace(/\s+/g, ''));
+				newProduct.image = data.publicUrl;
+			}
+
+			await addProduct(newProduct);
+			setIsAddDialogOpen(false);
+		} catch (error) {
+			toast({
+				title: 'Error',
+				description:
+					error instanceof Error ? error.message : 'Error desconocido',
+				variant: 'destructive',
+			});
+		}
+	};
+
 	const handleSave = async (updatedProduct: Product) => {
 		try {
 			const nameSanitized = sanitizeFileName(updatedProduct.name);
 
-			//delete image from storage
-			const name = nameSanitized.replace(/\s+/g, '');
-			await supabase.storage.from('amazonia').remove([name]);
+			// Sube la nueva imagen si existe
+			if (updatedProduct.image && typeof updatedProduct.image !== 'string') {
+				await supabase.storage
+					.from('amazonia')
+					.upload(nameSanitized.replace(/\s+/g, ''), updatedProduct.image, {
+						upsert: true,
+					});
+				const { data } = await supabase.storage
+					.from('amazonia')
+					.getPublicUrl(nameSanitized.replace(/\s+/g, ''));
+				updatedProduct.image = data.publicUrl;
+			}
 
-			// Sube la nueva imagen
-			await supabase.storage
-				.from('amazonia')
-				.upload(name, updatedProduct.image!, {
-					upsert: true,
-				});
-
-			// Obtén la URL pública de la imagen
-			const { data } = await supabase.storage
-				.from('amazonia')
-				.getPublicUrl(name);
-
-			// Actualiza el producto con la nueva URL de la imagen
-			updatedProduct.image = data.publicUrl;
 			await updateProduct(updatedProduct);
-
-			// Cierra el diálogo de edición y limpia el estado
 			setIsEditDialogOpen(false);
 			setEditingProduct(null);
 
-			// Muestra un mensaje de éxito
 			toast({
 				duration: 2000,
 				title: 'Producto actualizado',
@@ -131,41 +152,10 @@ function ProductList() {
 			});
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (error) {
-			// Muestra un mensaje de error
 			toast({
 				duration: 2000,
 				title: 'Error',
 				description: 'No se pudo actualizar el producto.',
-				variant: 'destructive',
-			});
-		}
-	};
-
-	const handleAdd = async (newProduct: Omit<Product, 'id'>) => {
-		try {
-			const nameSanitized = sanitizeFileName(newProduct.name);
-
-			await supabase.storage
-				.from('amazonia')
-				.upload(nameSanitized.replace(/\s+/g, ''), newProduct.image!, {
-					upsert: true,
-				});
-			const { data } = await supabase.storage
-				.from('amazonia')
-				.getPublicUrl(nameSanitized.replace(/\s+/g, ''));
-
-			newProduct.image = data.publicUrl;
-
-			// console.log('🚀 return link download', newProduct);
-			// console.log('🚀 ~ file: page.tsx ~ line 132 ~ handleAdd ~ error', error);
-
-			await addProduct(newProduct);
-
-			setIsAddDialogOpen(false);
-		} catch (error) {
-			toast({
-				title: 'Error',
-				description: error instanceof Error ? error.message : 'Unknown error',
 				variant: 'destructive',
 			});
 		}
@@ -237,15 +227,18 @@ function ProductList() {
 					</TableHeader>
 					<TableBody>
 						{products.map((product) => (
-							<TableRow key={product.id}>
-								<TableCell className="font-medium text-foreground dark:text-gray-300">
+							<TableRow
+								key={product.id}
+								className="capitalize  hover:bg-gray-100 dark:hover:bg-gray-700"
+							>
+								<TableCell className="font-medium text-foreground dark:text-gray-300 ">
 									{product.name}
 								</TableCell>
 								<TableCell className="text-foreground dark:text-gray-300">
 									{product.marca}
 								</TableCell>
 								<TableCell className="text-foreground dark:text-gray-300">
-									${product.price.toFixed(2)}
+									S/.{product.price.toFixed(2)}
 								</TableCell>
 								<TableCell className="text-foreground dark:text-gray-300">
 									{product.medida}
@@ -326,12 +319,7 @@ type ProductFormProps = {
 };
 
 function ProductForm({ product, onSave }: ProductFormProps) {
-	const {
-		stores,
-		isLoading,
-		// error,
-		fetchStores,
-	} = useProductStore();
+	const { stores, isLoading, fetchStores } = useProductStore();
 
 	const [formData, setFormData] = useState(
 		product || {
@@ -340,14 +328,20 @@ function ProductForm({ product, onSave }: ProductFormProps) {
 			marca: '',
 			medida: '',
 			image: null as File | null,
-			//store selected input
 			store_id: 0,
 		}
 	);
 
+	const [currentImage, setCurrentImage] = useState<string | null>(
+		product?.image || null
+	);
+
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		onSave(formData as Product);
+		onSave({
+			...formData,
+			image: formData.image || currentImage, // Usa la nueva imagen o la actual
+		} as Product);
 	};
 
 	useEffect(() => {
@@ -385,7 +379,7 @@ function ProductForm({ product, onSave }: ProductFormProps) {
 				/>
 			</div>
 			<div>
-				<Label htmlFor="stock" className="text-foreground dark:text-gray-300">
+				<Label htmlFor="marca" className="text-foreground dark:text-gray-300">
 					Marca
 				</Label>
 				<Input
@@ -397,14 +391,11 @@ function ProductForm({ product, onSave }: ProductFormProps) {
 				/>
 			</div>
 			<div>
-				<Label
-					htmlFor="description"
-					className="text-foreground dark:text-gray-300"
-				>
+				<Label htmlFor="medida" className="text-foreground dark:text-gray-300">
 					Medida
 				</Label>
 				<Input
-					id="description"
+					id="medida"
 					required
 					value={formData.medida}
 					onChange={(e) => setFormData({ ...formData, medida: e.target.value })}
@@ -414,8 +405,8 @@ function ProductForm({ product, onSave }: ProductFormProps) {
 			<div>
 				<Select
 					required
-					onValueChange={
-						(value) => setFormData({ ...formData, store_id: Number(value) }) // Manejar el cambio del valor seleccionado
+					onValueChange={(value) =>
+						setFormData({ ...formData, store_id: Number(value) })
 					}
 				>
 					<SelectTrigger className="w-[200px]">
@@ -432,24 +423,35 @@ function ProductForm({ product, onSave }: ProductFormProps) {
 					</SelectContent>
 				</Select>
 			</div>
-
 			<div>
 				<Label htmlFor="image" className="text-foreground dark:text-gray-300">
 					Imagen
 				</Label>
+				{currentImage && (
+					<Image
+						src={currentImage}
+						alt="Imagen actual"
+						width={100}
+						height={100}
+						className="mb-2 rounded-md"
+					/>
+				)}
 				<Input
-					required
 					id="image"
 					type="file"
 					accept="image/*"
-					onChange={(e) =>
-						setFormData({ ...formData, image: e.target.files?.[0] || null })
-					}
+					onChange={(e) => {
+						const file = e.target.files?.[0];
+						if (file) {
+							setFormData({ ...formData, image: file });
+							setCurrentImage(URL.createObjectURL(file)); // Muestra la nueva imagen seleccionada
+						}
+					}}
 					className="bg-background dark:bg-gray-700 text-foreground dark:text-gray-300"
 				/>
 			</div>
 			<Button type="submit" disabled={isLoading}>
-				{isLoading ? 'Loading...' : 'Guardar'}
+				{isLoading ? 'Cargando...' : 'Guardar'}
 			</Button>
 		</form>
 	);

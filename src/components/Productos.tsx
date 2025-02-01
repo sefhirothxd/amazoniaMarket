@@ -2,83 +2,73 @@
 
 import Image from 'next/image';
 import React from 'react';
-
 import { useProductStore } from '@/store/useProductStore';
 
 const Productos = () => {
 	const { products, fetchProducts } = useProductStore();
+	const [currentPage, setCurrentPage] = React.useState(1); // Estado para la página actual
+	const [shouldScroll, setShouldScroll] = React.useState(false); // Bandera para controlar el desplazamiento
+	const productsPerPage = 8; // Número de productos por página
 
 	React.useEffect(() => {
 		fetchProducts();
 	}, [fetchProducts]);
 
+	// Calcula los productos que deben mostrarse en la página actual
+	const indexOfLastProduct = currentPage * productsPerPage;
+	const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+	const currentProducts = products.slice(
+		indexOfFirstProduct,
+		indexOfLastProduct
+	);
+
+	// Cambia a la página siguiente
+	const nextPage = () => {
+		if (currentPage < Math.ceil(products.length / productsPerPage)) {
+			setCurrentPage(currentPage + 1);
+			setShouldScroll(true); // Activa el desplazamiento
+		}
+	};
+
+	// Cambia a la página anterior
+	const prevPage = () => {
+		if (currentPage > 1) {
+			setCurrentPage(currentPage - 1);
+			setShouldScroll(true); // Activa el desplazamiento
+		}
+	};
+
+	// Desplaza al inicio del componente solo si shouldScroll es true
+	React.useEffect(() => {
+		if (shouldScroll) {
+			const productosSection = document.getElementById('productos');
+			if (productosSection) {
+				productosSection.scrollIntoView({ behavior: 'smooth' });
+			}
+			setShouldScroll(false); // Restablece la bandera después del desplazamiento
+		}
+	}, [shouldScroll]);
+
 	return (
 		<div id="productos" className="bg-[#D5E8D7] py-[106px] hojas">
-			<div className="text-center  mb-[55px] font-semibold">
-				<h2 className="md:text-[45px] text-[35px] ">Nuestros Productos</h2>
-				<span className="md:text-[25px] text-[20px] ">
+			<div className="text-center mb-[55px] font-semibold">
+				<h2 className="md:text-[45px] text-[35px]">Nuestros Productos</h2>
+				<span className="md:text-[25px] text-[20px]">
 					Visitanos y compra tus productos favoritos
 				</span>
 			</div>
-			{/* <div className="flex justify-center items-center gap-[21px] flex-wrap md:flex-nowrap">
-				<div className="bg-white py-[19px] px-[8] rounded-[20px] w-[210px] h-[58px] flex justify-center">
-					<Image
-						height={50}
-						width={180}
-						src="/todo.svg"
-						alt=""
-						className=" object-cover w-[60px]"
-					/>
-				</div>
-				<div className="bg-white py-[19px] px-[8] rounded-[20px] w-[210px] h-[58px] flex justify-center">
-					<Image
-						height={50}
-						width={180}
-						src="/maldonado.svg"
-						alt=""
-						className=" object-cover"
-					/>
-				</div>
-				<div className="bg-white py-[19px] px-[8] rounded-[20px] w-[210px] h-[58px] flex justify-center">
-					<Image
-						height={50}
-						width={100}
-						src="/iquitos.svg"
-						alt=""
-						className=" object-cover"
-					/>
-				</div>
-				<div className="bg-white py-[19px] px-[8] rounded-[20px] w-[210px] h-[58px] flex justify-center">
-					<Image
-						height={50}
-						width={100}
-						src="/tarapoto.svg"
-						alt=""
-						className=" object-cover"
-					/>
-				</div>
-				<div className="bg-white py-[19px] px-[8] rounded-[20px] w-[210px] h-[58px] flex justify-center">
-					<Image
-						height={50}
-						width={100}
-						src="pucallpa.svg"
-						alt=""
-						className=" object-cover"
-					/>
-				</div>
-			</div> */}
-			<div className="flex justify-center items-center gap-4 flex-wrap mt-[77px] max-w-[1200px] mx-auto ">
-				{products.map((item) => (
+			<div className="flex justify-center items-center gap-4 flex-wrap mt-[77px] max-w-[1200px] mx-auto">
+				{currentProducts.map((item) => (
 					<div
 						key={item.id}
-						className="h-[350px]  w-[264px] bg-white py-[12px] px-[13px] rounded-[15px]"
+						className="h-[350px] w-[264px] bg-white py-[12px] px-[13px] rounded-[15px]"
 					>
 						<Image
 							height={184}
 							width={240}
 							src={item.image!}
 							alt="imagen de producto"
-							className=" object-cover h-[184px] rounded-[15px]"
+							className="object-cover h-[184px] rounded-[15px]"
 						/>
 						<div className="leading-6 mt-2">
 							<p className="text-[16px] text-[#7C7C7C] font-semibold">
@@ -99,6 +89,29 @@ const Productos = () => {
 						</div>
 					</div>
 				))}
+			</div>
+
+			{/* Controles de paginación */}
+			<div className="flex justify-center gap-4 mt-8">
+				<button
+					onClick={prevPage}
+					disabled={currentPage === 1}
+					className="bg-[#EA0029] text-white px-4 py-2 rounded-md disabled:opacity-50"
+				>
+					Anterior
+				</button>
+				<span className="text-[#000] font-semibold flex items-center">
+					Página {currentPage} de {Math.ceil(products.length / productsPerPage)}
+				</span>
+				<button
+					onClick={nextPage}
+					disabled={
+						currentPage === Math.ceil(products.length / productsPerPage)
+					}
+					className="bg-[#EA0029] text-white px-4 py-2 rounded-md disabled:opacity-50"
+				>
+					Siguiente
+				</button>
 			</div>
 		</div>
 	);
