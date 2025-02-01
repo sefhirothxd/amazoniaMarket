@@ -251,6 +251,7 @@ function ProductList() {
 											className="h-8 w-8 rounded-full"
 											width={32}
 											height={32}
+											quality={100}
 										/>
 									) : (
 										<div className="h-8 w-8 bg-slate-700"></div>
