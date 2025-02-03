@@ -11,7 +11,7 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import {
 	Dialog,
 	DialogContent,
@@ -35,6 +35,8 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 type Product = {
 	id: number;
@@ -57,6 +59,8 @@ function ProductList() {
 		updateProduct,
 		deleteProduct,
 	} = useProductStore();
+
+	const router = useRouter();
 
 	const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string;
 	const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
@@ -93,6 +97,11 @@ function ProductList() {
 	const handleEdit = (product: Product) => {
 		setEditingProduct(product);
 		setIsEditDialogOpen(true);
+	};
+
+	const handleLogout = async () => {
+		await supabase.auth.signOut();
+		router.push('/');
 	};
 
 	const handleAdd = async (newProduct: Omit<Product, 'id'>) => {
@@ -175,28 +184,45 @@ function ProductList() {
 	return (
 		<Card className="bg-background dark:bg-gray-800">
 			<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-				<CardTitle className="text-foreground dark:text-gray-100">
+				{/* <CardTitle className="text-foreground dark:text-gray-100">
 					Productos
-				</CardTitle>
-				<Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-					<DialogTrigger asChild>
-						<Button size="sm">
-							<Plus className="mr-2 h-4 w-4" />
-							Agregar Producto
-						</Button>
-					</DialogTrigger>
-					<DialogContent className="bg-background dark:bg-gray-800">
-						<DialogHeader>
-							<DialogTitle className="text-foreground dark:text-gray-100">
-								Agregar Nuevo Producto
-							</DialogTitle>
-							<DialogDescription className="text-muted-foreground dark:text-gray-400">
-								Ingrese los detalles del nuevo producto aquí.
-							</DialogDescription>
-						</DialogHeader>
-						<ProductForm onSave={handleAdd} />
-					</DialogContent>
-				</Dialog>
+				</CardTitle> */}
+				<Link href="/">
+					<Image
+						src="/logo.svg"
+						alt="Amazonia Market"
+						width={150}
+						height={100}
+					/>
+				</Link>
+				<div className="flex  gap-3 items-center ">
+					<Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+						<DialogTrigger asChild>
+							<Button size="sm">
+								<Plus className="mr-2 h-4 w-4" />
+								Agregar Producto
+							</Button>
+						</DialogTrigger>
+						<DialogContent className="bg-background dark:bg-gray-800">
+							<DialogHeader>
+								<DialogTitle className="text-foreground dark:text-gray-100">
+									Agregar Nuevo Producto
+								</DialogTitle>
+								<DialogDescription className="text-muted-foreground dark:text-gray-400">
+									Ingrese los detalles del nuevo producto aquí.
+								</DialogDescription>
+							</DialogHeader>
+							<ProductForm onSave={handleAdd} />
+						</DialogContent>
+					</Dialog>
+					<Button
+						size="sm"
+						onClick={handleLogout}
+						className="bg-red-500 hover:bg-red-600 dark:bg-red-700 dark:hover:bg-red-800"
+					>
+						Cerrar Sesión
+					</Button>
+				</div>
 			</CardHeader>
 			<CardContent>
 				<Table>

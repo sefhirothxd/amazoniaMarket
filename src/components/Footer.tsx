@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 export const Footer = () => {
 	return (
-		<footer className="bg-[#679B6A] text-white relative pt-[200px] pb-[121px] w-full ">
+		<footer className="bg-[#679B6A] text-white relative pt-[200px]  pb-[50px] lg:pb-[121px] w-full ">
 			{/* Wavy border */}
 			{/* <div className="absolute top-[-100px] left-0 w-full">
 				<svg
@@ -47,32 +47,34 @@ export const Footer = () => {
 								En Amazonia Market, ofrecemos productos de calidad en 4
 								departamentos.
 							</p>
-							<Image
-								src="/sugerencia.svg"
-								alt="logo"
-								width={244}
-								height={56}
-								className="mb-4"
-							/>
+							<Link href="#contacto" className="cursor-pointer relative z-10">
+								<Image
+									src="/sugerencia.svg"
+									alt="logo"
+									width={244}
+									height={56}
+									className="mb-4"
+								/>
+							</Link>
 						</div>
 						<div className="">
-							<ul className="flex flex-col gap-[23px] ">
+							<ul className="flex flex-col gap-[23px] relative z-10 ">
 								<li>
-									<Link href="/nosotros">Nosotros</Link>
+									<Link href="#nosotros">Nosotros</Link>
 								</li>
 								<li>
-									<Link href="/productos">Productos</Link>
+									<Link href="#productos">Productos</Link>
 								</li>
 								<li>
-									<Link href="/tiendas">Tiendas</Link>
+									<Link href="#tiendas">Tiendas</Link>
 								</li>
 								<li>
-									<Link href="/contacto">Contacto</Link>
+									<Link href="#contacto">Contacto</Link>
 								</li>
 							</ul>
 						</div>
 						<div>
-							<ul className="flex flex-col gap-[23px] ">
+							<ul className="flex flex-col gap-[23px]  relative z-10">
 								<li className="flex gap-[12px] md:gap-[25px] items-center">
 									<Image
 										src="/iconRuc.svg"
@@ -80,7 +82,7 @@ export const Footer = () => {
 										width={18}
 										height={22}
 									/>
-									<p>Ruc 759456123</p>
+									<p>Ruc 20612672335</p>
 								</li>
 								<li className="flex gap-[12px] md:gap-[25px] items-center">
 									<Image
@@ -153,7 +155,7 @@ export const Footer = () => {
 				</div>
 			</div>
 			<Image
-				className="absolute bottom-0 left-0 md:w-full md:h-full md:object-fill w-full object-bottom h-auto object-contain"
+				className="absolute bottom-0 left-0 md:w-full md:h-full md:object-fill w-full object-bottom h-auto object-contain hidden lg:block"
 				src="/arbolitos.svg"
 				alt="footer"
 				width={100}

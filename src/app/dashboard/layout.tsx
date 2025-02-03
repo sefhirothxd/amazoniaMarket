@@ -35,12 +35,12 @@ export default function Page({ children }: { children: React.ReactNode }) {
 	return (
 		<ThemeProvider
 			attribute="class"
-			defaultTheme="system"
+			defaultTheme="default"
 			enableSystem
 			disableTransitionOnChange
 		>
 			<SidebarProvider>
-				<AppSidebar />
+				{/* <AppSidebar /> */}
 				<SidebarInset>{children}</SidebarInset>
 			</SidebarProvider>
 		</ThemeProvider>
