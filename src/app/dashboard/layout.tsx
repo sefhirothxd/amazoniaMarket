@@ -1,6 +1,6 @@
 'use client';
 
-import { AppSidebar } from '@/components/app-sidebar';
+// import { AppSidebar } from '@/components/app-sidebar';
 import { useRouter } from 'next/navigation';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { ThemeProvider } from '@/components/theme-provider';
@@ -41,6 +41,7 @@ export default function Page({ children }: { children: React.ReactNode }) {
 		>
 			<SidebarProvider>
 				{/* <AppSidebar /> */}
+
 				<SidebarInset>{children}</SidebarInset>
 			</SidebarProvider>
 		</ThemeProvider>
