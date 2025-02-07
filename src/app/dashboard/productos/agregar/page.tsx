@@ -61,7 +61,8 @@ function ProductList() {
 	} = useProductStore();
 
 	const router = useRouter();
-
+	const { isShowingPrice, changeShowingPrice, fetchGetPrice } =
+		useProductStore();
 	const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string;
 	const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
 	const supabase = createClient(supabaseUrl, supabaseAnonKey);
@@ -177,9 +178,15 @@ function ProductList() {
 			.replace(/[^a-zA-Z0-9._-]/g, ''); // Elimina caracteres especiales
 	}
 
+	const handleShowPrice = async () => {
+		await changeShowingPrice();
+		await fetchGetPrice();
+	};
+
 	useEffect(() => {
 		fetchProducts();
-	}, [fetchProducts]);
+		fetchGetPrice();
+	}, [fetchProducts, fetchGetPrice]);
 
 	return (
 		<Card className="bg-background dark:bg-gray-800">
@@ -196,6 +203,9 @@ function ProductList() {
 					/>
 				</Link>
 				<div className="flex  gap-3 items-center ">
+					<Button size="sm" onClick={() => handleShowPrice()}>
+						{isShowingPrice ? 'Ocultar precios' : 'Mostrar precios'}
+					</Button>
 					<Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
 						<DialogTrigger asChild>
 							<Button size="sm">
@@ -274,7 +284,7 @@ function ProductList() {
 										<Image
 											src={product.image}
 											alt={product.name}
-											className="h-8 w-8 rounded-full"
+											className="h-8 w-8 rounded-full object-cover"
 											width={32}
 											height={32}
 											quality={100}
@@ -432,11 +442,12 @@ function ProductForm({ product, onSave }: ProductFormProps) {
 			<div>
 				<Select
 					required
+					value={formData.store_id.toString()}
 					onValueChange={(value) =>
 						setFormData({ ...formData, store_id: Number(value) })
 					}
 				>
-					<SelectTrigger className="w-[200px]">
+					<SelectTrigger className="w-full">
 						<SelectValue placeholder="Selecciona una tienda" />
 					</SelectTrigger>
 					<SelectContent>

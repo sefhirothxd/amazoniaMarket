@@ -6,6 +6,9 @@ const nextConfig: NextConfig = {
 	images: {
 		domains: ['jzkbzghdxxqlugatkuqn.supabase.co'], // Agrega aquí el dominio
 	},
+	devIndicators: {
+		appIsrStatus: false,
+	},
 };
 
 export default nextConfig;

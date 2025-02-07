@@ -5,7 +5,7 @@ import React from 'react';
 import { useProductStore } from '@/store/useProductStore';
 
 const Productos = () => {
-	const { products, fetchProducts } = useProductStore();
+	const { products, fetchProducts, isShowingPrice } = useProductStore();
 	const [currentPage, setCurrentPage] = React.useState(1); // Estado para la página actual
 	const [shouldScroll, setShouldScroll] = React.useState(false); // Bandera para controlar el desplazamiento
 	const productsPerPage = 8; // Número de productos por página
@@ -61,7 +61,7 @@ const Productos = () => {
 				{currentProducts.map((item) => (
 					<div
 						key={item.id}
-						className="h-[350px] w-[264px] bg-white py-[12px] px-[13px] rounded-[15px]"
+						className="h-[auto] w-[264px] bg-white py-[12px] px-[13px] rounded-[15px]"
 					>
 						<Image
 							height={184}
@@ -82,12 +82,15 @@ const Productos = () => {
 								{item.medida}
 							</p>
 						</div>
-						<div className="flex justify-between mt-4">
-							<button className="bg-[#EA0029] text-white text-[26px] w-full rounded-[23px]">
-								<span className="text-[18px] mr-2">S/.</span>
-								{item.price}
-							</button>
-						</div>
+
+						{isShowingPrice && (
+							<div className="flex justify-between mt-4">
+								<button className="bg-[#EA0029] text-white text-[26px] w-full rounded-[23px]">
+									<span className="text-[18px] mr-2">S/.</span>
+									{item.price}
+								</button>
+							</div>
+						)}
 					</div>
 				))}
 			</div>

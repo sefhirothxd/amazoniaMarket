@@ -18,6 +18,12 @@ type Product = {
 	store_id: number;
 };
 
+type Price = {
+	id: number;
+	show_price: boolean;
+	updated_at: Date;
+};
+
 type Store = {
 	id: number;
 	name: string;
@@ -28,7 +34,8 @@ export async function getProducts(): Promise<Product[]> {
 	const { data, error } = await supabase
 		.from('products')
 		.select('*, store:store_id (name)')
-		.order('name', { ascending: false });
+		.order('updated_at', { ascending: false }) // Ordenar por fecha de actualización (más recientes primero)
+		.order('created_at', { ascending: false }); // Luego por fecha de creación (más recientes primero)
 
 	if (error) {
 		console.error('Error fetching products:', error);
@@ -41,7 +48,7 @@ export async function getProducts(): Promise<Product[]> {
 		store: product.store.name, // Agregar el nombre de la tienda al objeto del producto
 	}));
 
-	console.log('🚀 ~ getProducts ~ data:', formattedData);
+	console.log('🚀 ~ getProducts ~ data:', data);
 
 	return formattedData || [];
 }
@@ -55,6 +62,35 @@ export async function getStores(): Promise<Store[]> {
 		console.error('Error fetching stores:', error);
 		throw new Error('Error fetching stores');
 	}
+
+	return data || [];
+}
+
+// Obtener estado de los precios
+export async function updatePrice(showPrice: boolean): Promise<Price[]> {
+	const { data, error } = await supabase
+		.from('product_price_visibility')
+		.update({ show_price: showPrice, updated_at: new Date() })
+		.eq('id', 'a24843ad-f346-4a7a-8af2-d0fc51c361e2');
+
+	if (error) {
+		console.error('Error al cambiar visibilidad del precio:', error);
+	}
+	return data || [];
+}
+
+// Obtener estado de los precios
+export async function getPrice(): Promise<Price[]> {
+	const { data, error } = await supabase
+		.from('product_price_visibility')
+		.select('*');
+
+	if (error) {
+		console.error('Error fetching price:', error);
+		throw new Error('Error fetching price');
+	}
+
+	console.log('🚀 ~ getPrice ~ data:', data);
 
 	return data || [];
 }
