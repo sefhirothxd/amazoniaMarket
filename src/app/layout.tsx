@@ -37,6 +37,9 @@ export const metadata: Metadata = {
 	openGraph: {
 		images: '/bannerMovil.png',
 	},
+	other: {
+		'google-site-verification': 'l9Uc5fHb39BG8RHgTf3X43Q6IhbJmZfM6XwLnonaNW4',
+	},
 };
 
 export default function RootLayout({

@@ -5,9 +5,10 @@ import React from 'react';
 import { useProductStore } from '@/store/useProductStore';
 
 const Productos = () => {
-	const { products, fetchProducts, isShowingPrice } = useProductStore();
+	const { products, fetchProducts, isShowingPrice, fetchGetPrice } =
+		useProductStore();
 	const [currentPage, setCurrentPage] = React.useState(1); // Estado para la página actual
-	const [shouldScroll, setShouldScroll] = React.useState(false); // Bandera para controlar el desplazamiento
+	// const [shouldScroll, setShouldScroll] = React.useState(false); // Bandera para controlar el desplazamiento
 	const productsPerPage = 8; // Número de productos por página
 
 	React.useEffect(() => {
@@ -26,7 +27,7 @@ const Productos = () => {
 	const nextPage = () => {
 		if (currentPage < Math.ceil(products.length / productsPerPage)) {
 			setCurrentPage(currentPage + 1);
-			setShouldScroll(true); // Activa el desplazamiento
+			// setShouldScroll(true); // Activa el desplazamiento
 		}
 	};
 
@@ -34,20 +35,25 @@ const Productos = () => {
 	const prevPage = () => {
 		if (currentPage > 1) {
 			setCurrentPage(currentPage - 1);
-			setShouldScroll(true); // Activa el desplazamiento
+			// setShouldScroll(true); // Activa el desplazamiento
 		}
 	};
 
 	// Desplaza al inicio del componente solo si shouldScroll es true
+	// React.useEffect(() => {
+	// 	if (shouldScroll) {
+	// 		const productosSection = document.getElementById('productos');
+	// 		if (productosSection) {
+	// 			productosSection.scrollIntoView({ behavior: 'smooth' });
+	// 		}
+	// 		setShouldScroll(false); // Restablece la bandera después del desplazamiento
+	// 	}
+	// }, [shouldScroll]);
+
+	// Obtener el estado de los precios
 	React.useEffect(() => {
-		if (shouldScroll) {
-			const productosSection = document.getElementById('productos');
-			if (productosSection) {
-				productosSection.scrollIntoView({ behavior: 'smooth' });
-			}
-			setShouldScroll(false); // Restablece la bandera después del desplazamiento
-		}
-	}, [shouldScroll]);
+		fetchGetPrice();
+	}, [fetchGetPrice]);
 
 	return (
 		<div id="productos" className="bg-[#D5E8D7] py-[106px] hojas">
@@ -61,7 +67,7 @@ const Productos = () => {
 				{currentProducts.map((item) => (
 					<div
 						key={item.id}
-						className="h-[auto] w-[264px] bg-white py-[12px] px-[13px] rounded-[15px]"
+						className="h-[auto] min-h-[312px] w-[264px] bg-white py-[12px] px-[13px] rounded-[15px] flex flex-col justify-between"
 					>
 						<Image
 							height={184}
@@ -72,13 +78,13 @@ const Productos = () => {
 							quality={100}
 						/>
 						<div className="leading-6 mt-2">
-							<p className="text-[16px] text-[#7C7C7C] font-semibold">
+							<p className="text-[14px] text-[#7C7C7C] font-semibold">
 								{item.marca}
 							</p>
-							<p className="text-[22px] text-[#000] font-semibold">
+							<p className="text-[18px] text-[#000] font-semibold">
 								{item.name}
 							</p>
-							<p className="text-[16px] text-[#000] font-semibold">
+							<p className="text-[14px] text-[#000] font-semibold">
 								{item.medida}
 							</p>
 						</div>

@@ -48,7 +48,7 @@ export async function getProducts(): Promise<Product[]> {
 		store: product.store.name, // Agregar el nombre de la tienda al objeto del producto
 	}));
 
-	console.log('🚀 ~ getProducts ~ data:', data);
+	// console.log('🚀 ~ getProducts ~ data:', data);
 
 	return formattedData || [];
 }
@@ -56,7 +56,7 @@ export async function getProducts(): Promise<Product[]> {
 //obtener nombre de las tiendas
 export async function getStores(): Promise<Store[]> {
 	const { data, error } = await supabase.from('store').select('*');
-	console.log('🚀 ~ getStores ~ data:', data);
+	// console.log('🚀 ~ getStores ~ data:', data);
 
 	if (error) {
 		console.error('Error fetching stores:', error);
@@ -90,7 +90,7 @@ export async function getPrice(): Promise<Price[]> {
 		throw new Error('Error fetching price');
 	}
 
-	console.log('🚀 ~ getPrice ~ data:', data);
+	// console.log('🚀 ~ getPrice ~ data:', data);
 
 	return data || [];
 }
@@ -99,11 +99,11 @@ export async function getPrice(): Promise<Price[]> {
 export async function addProduct(
 	product: Omit<Product, 'id'>
 ): Promise<Product> {
-	const session = await supabase.auth.getSession();
-	const user = await supabase.auth.getUser();
+	// const session = await supabase.auth.getSession();
+	// const user = await supabase.auth.getUser();
 
-	console.log('🚀 ~ get session', session);
-	console.log('🚀 ~ get user', user);
+	// console.log('🚀 ~ get session', session);
+	// console.log('🚀 ~ get user', user);
 
 	const { data, error } = await supabase
 		.from('products')
@@ -121,8 +121,8 @@ export async function addProduct(
 
 // Actualizar un producto existente
 export async function updateProduct(updatedProduct: Product): Promise<Product> {
-	console.log('Updating product with ID:', updatedProduct.id);
-	console.log('Product data:', updatedProduct);
+	// console.log('Updating product with ID:', updatedProduct.id);
+	// console.log('Product data:', updatedProduct);
 	const { data, error } = await supabase
 		.from('products')
 		.update({

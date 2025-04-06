@@ -82,7 +82,7 @@ export const Footer = () => {
 										width={18}
 										height={22}
 									/>
-									<p>Ruc 20612672335</p>
+									<p>ruc 20612672335</p>
 								</li>
 								<li className="flex gap-[12px] md:gap-[25px] items-center">
 									<Image
@@ -91,7 +91,7 @@ export const Footer = () => {
 										width={21}
 										height={24}
 									/>
-									<p>+51 965 462 649</p>
+									<p>+51 960 197 018</p>
 								</li>
 								<li className="flex gap-[12px] md:gap-[25px] items-center">
 									<Image
@@ -105,7 +105,7 @@ export const Footer = () => {
 									overflow-hidden text-ellipsis whitespace-nowrap 
 									"
 									>
-										Aclientes@amazoniamarket.com
+										aclientes@amazoniamarket.com
 									</p>
 								</li>
 								<li className="flex gap-[12px] md:gap-[25px] items-center">

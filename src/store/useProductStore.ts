@@ -63,7 +63,7 @@ export const useProductStore = create<ProductStore>((set, get) => ({
 		set({ isLoading: true, error: null });
 		try {
 			const statePrice = get().isShowingPrice;
-			console.log('🚀 ~ changeShowingPrice: ~ s	tatePrice:', statePrice);
+			// console.log('🚀 ~ changeShowingPrice: ~ s	tatePrice:', statePrice);
 			await updatePrice(!statePrice);
 			set({ isShowingPrice: statePrice, isLoading: false });
 		} catch (error) {

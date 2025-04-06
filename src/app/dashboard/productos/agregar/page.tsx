@@ -61,7 +61,7 @@ function ProductList() {
 	} = useProductStore();
 
 	const router = useRouter();
-	const { isShowingPrice, changeShowingPrice, fetchGetPrice } =
+	const { isShowingPrice, changeShowingPrice, fetchGetPrice, fetchStores } =
 		useProductStore();
 	const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string;
 	const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
@@ -186,7 +186,8 @@ function ProductList() {
 	useEffect(() => {
 		fetchProducts();
 		fetchGetPrice();
-	}, [fetchProducts, fetchGetPrice]);
+		fetchStores();
+	}, [fetchProducts, fetchGetPrice, fetchStores]);
 
 	return (
 		<Card className="bg-background dark:bg-gray-800">
@@ -356,7 +357,7 @@ type ProductFormProps = {
 };
 
 function ProductForm({ product, onSave }: ProductFormProps) {
-	const { stores, isLoading, fetchStores } = useProductStore();
+	const { stores, isLoading } = useProductStore();
 
 	const [formData, setFormData] = useState(
 		product || {
@@ -380,10 +381,6 @@ function ProductForm({ product, onSave }: ProductFormProps) {
 			image: formData.image || currentImage, // Usa la nueva imagen o la actual
 		} as Product);
 	};
-
-	useEffect(() => {
-		fetchStores();
-	}, [fetchStores]);
 
 	return (
 		<form onSubmit={handleSubmit} className="space-y-4">
@@ -440,6 +437,9 @@ function ProductForm({ product, onSave }: ProductFormProps) {
 				/>
 			</div>
 			<div>
+				<Label htmlFor="store" className="text-foreground dark:text-gray-300">
+					Tienda
+				</Label>
 				<Select
 					required
 					value={formData.store_id.toString()}
