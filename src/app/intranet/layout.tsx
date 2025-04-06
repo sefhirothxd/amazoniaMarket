@@ -7,7 +7,11 @@ interface LayoutProps {
 	children: React.ReactNode;
 }
 
-const inter = Inter({ weight: ['400', '700'], style: ['normal', 'italic'] });
+const inter = Inter({
+	weight: ['400', '700'],
+	style: ['normal', 'italic'],
+	subsets: ['latin'],
+});
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
 	return (
