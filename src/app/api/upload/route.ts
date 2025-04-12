@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
+import { supabase } from '@/lib/supabase';
 
 const uploadDir = path.join(process.cwd(), 'public/pdfs');
 
@@ -21,68 +22,75 @@ export async function POST(req: NextRequest) {
 			const match = cadena.match(regex);
 
 			if (match) {
-				const año = match[1]; // Año (4 dígitos)
-				const mes = match[2]; // Mes (2 dígitos)
-				const dni = match[3]; // DNI (8 dígitos)
-
-				return { dni, año, mes };
+				const anio = match[1];
+				const mes = match[2];
+				const dni = match[3];
+				return { dni, anio, mes };
 			} else {
 				return { error: 'Formato no válido' };
 			}
 		}
 
-		const uploadDir = path.join(process.cwd(), 'public/pdfs');
 		await fs.mkdir(uploadDir, { recursive: true });
 
 		const uploadedFiles = [];
-		const pdfsUploaded = [];
 
 		for (const file of files) {
 			const bytes = await file.arrayBuffer();
 			const buffer = Buffer.from(bytes);
 			const filePath = path.join(uploadDir, file.name);
 
-			const cadena = file.name;
-			const extraName = extraerDatos(cadena);
-			const { dni, año, mes } = extraName;
-			pdfsUploaded.push({ dni, año, mes, ruta_pdf: `/pdfs/${file.name}` });
+			const { dni, anio, mes, error } = extraerDatos(file.name);
+			if (error) continue;
 
+			// Buscar el empleado por DNI
+			const { data: empleado, error: empleadoError } = await supabase
+				.from('empleados')
+				.select('id')
+				.eq('dni', dni)
+				.single();
+
+			if (empleadoError || !empleado) {
+				console.warn(`Empleado con DNI ${dni} no encontrado`);
+				continue;
+			}
+
+			const ruta_pdf = `/pdfs/${file.name}`;
+
+			// Guardar en Supabase (tabla boleta)
+			const { error: insertError } = await supabase
+				.from('boletas_pago')
+				.insert({
+					empleado_id: empleado.id,
+					ruta_pdf,
+					anio: parseInt(anio ?? '0'),
+					mes: parseInt(mes ?? '0'),
+				});
+
+			if (insertError) {
+				console.error(
+					`Error al guardar boleta en Supabase para ${file.name}:`,
+					insertError
+				);
+				continue;
+			}
+
+			// Guardar el archivo en el disco
 			await fs.writeFile(filePath, buffer);
 
-			uploadedFiles.push(`/pdfs/${file.name}`);
+			uploadedFiles.push({
+				archivo: ruta_pdf,
+				empleado_id: empleado.id,
+				anio,
+				mes,
+			});
 		}
-
-		console.log('pdfsUploaded:', pdfsUploaded);
 
 		return NextResponse.json({ success: true, files: uploadedFiles });
 	} catch (error) {
 		console.error('Error al guardar archivos:', error);
 		return NextResponse.json(
 			{ error: 'Error al guardar los archivos' },
-			{ status: 500 }
-		);
-	}
-}
-
-export async function GET(req: NextRequest) {
-	try {
-		const searchParams = new URL(req.url).searchParams;
-		const dni = searchParams.get('dni');
-
-		// Obtener todos los archivos en la carpeta
-		const files = await fs.readdir(uploadDir);
-		let pdfFiles = files.map((file) => `/pdfs/${file}`);
-
-		// Filtrar por DNI si se proporciona
-		if (dni) {
-			pdfFiles = pdfFiles.filter((file) => file.includes(dni));
-		}
-
-		return NextResponse.json({ success: true, files: pdfFiles });
-	} catch (error) {
-		console.error('Error al obtener archivos:', error);
-		return NextResponse.json(
-			{ error: 'Error al obtener los archivos' },
 			{ status: 500 }
 		);
 	}

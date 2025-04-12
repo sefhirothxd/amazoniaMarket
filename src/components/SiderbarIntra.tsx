@@ -4,7 +4,10 @@ import Link from 'next/link';
 import React from 'react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
+import { useRouter } from 'next/navigation';
 const SiderbarIntra = () => {
+	const router = useRouter();
 	const links = [
 		{
 			name: 'Panel',
@@ -22,11 +25,6 @@ const SiderbarIntra = () => {
 			icons: icons.FileText,
 		},
 		{
-			name: 'Comunicado',
-			url: '',
-			icons: icons.MessageSquare,
-		},
-		{
 			name: 'Tiendas',
 			url: '',
 			icons: icons.ShoppingBag,
@@ -41,9 +39,14 @@ const SiderbarIntra = () => {
 
 	console.log(pathname);
 
+	const handleLogout = async () => {
+		await supabase.auth.signOut();
+		router.push('/');
+	};
+
 	return (
-		<div className="flex flex-col justify-between gap-4 min-h-screen p-4 bg-gray-100 min-w-[350px] pt-[50px]">
-			<nav className="w-full ">
+		<div className="flex flex-col justify-between gap-4 min-h-screen p-4 bg-gray-100 w-[100px] pt-[30px] lg:min-w-[350px]">
+			<nav className="w-full">
 				<Link href="/">
 					<picture className="flex justify-center">
 						<Image
@@ -55,27 +58,30 @@ const SiderbarIntra = () => {
 						/>
 					</picture>
 				</Link>
-				<ul className="flex-col flex justify-between items-start pl-[30px] gap-[20px]">
+				<ul className="flex-col flex justify-between items-start pl-[0px] lg:pl-[30px] gap-[10px]">
 					{links.map((link, index) => (
-						<li key={index} className=" w-[255px]">
+						<li key={index} className=" lg:w-[255px] text-[18px] w-full">
 							<Link
 								href={link.url}
 								className={
 									pathname == link.url
-										? 'flex items-center space-x-2 gap-[12px] bg-black text-white  pl-[30px] py-[20px] rounded-full font-semibold '
-										: 'flex items-center space-x-2 gap-[12px] hover:bg-black hover:text-white  pl-[30px] py-[20px] rounded-full font-semibold '
+										? 'flex items-center space-x-2 gap-[12px] bg-black text-white pl-[18px]  lg:pl-[30px] py-[15px] rounded-full font-semibold '
+										: 'flex items-center space-x-2 gap-[12px] hover:bg-black hover:text-white pl-[18px]   lg:pl-[30px] py-[15px] rounded-full font-semibold '
 								}
 							>
 								{link.icons && React.createElement(link.icons, { size: 24 })}
-								{link.name}
+								<p className="hidden lg:block">{link.name}</p>
 							</Link>
 						</li>
 					))}
 				</ul>
 			</nav>
-			<button className="flex items-center justify-center gap-2 w-[255px] ml-[30px] p-4 text-white bg-red-500 rounded-full font-inter font-semibold">
+			<button
+				onClick={handleLogout}
+				className="flex items-center justify-center gap-2 lg:w-[255px] lg:ml-[30px] p-4 text-white bg-red-500 rounded-full font-inter font-semibold"
+			>
 				<icons.LogOut size={24} />
-				Cerrar sesión
+				<p className="hidden lg:block">Cerrar sesión</p>
 			</button>
 		</div>
 	);

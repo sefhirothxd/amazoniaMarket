@@ -5,13 +5,17 @@ import { ColumnDef } from '@tanstack/react-table';
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type Empleado = {
-	id: string;
-	fecha: string;
-	nombre: string;
-	apellido: string;
-	tienda: string;
-	dni: string;
-	pdf: string;
+	anio: number;
+	mes: number;
+	ruta_pdf: string;
+	empleado: {
+		nombres: string;
+		apellidos: string;
+		dni: string;
+		tienda: {
+			nombre: string;
+		};
+	};
 };
 
 export const columns: ColumnDef<Empleado>[] = [
@@ -20,12 +24,12 @@ export const columns: ColumnDef<Empleado>[] = [
 		accessorKey: 'fecha',
 	},
 	{
-		header: 'Nombre',
-		accessorKey: 'nombre',
+		header: 'Nombres',
+		accessorKey: 'nombres',
 	},
 	{
-		header: 'Apellido',
-		accessorKey: 'apellido',
+		header: 'Apellidos',
+		accessorKey: 'apellidos',
 	},
 	{
 		header: 'Tienda',
@@ -37,12 +41,12 @@ export const columns: ColumnDef<Empleado>[] = [
 	},
 	{
 		header: 'PDF',
-		accessorKey: 'pdf',
+		accessorKey: 'ruta_pdf',
 		cell: (row) => {
 			return (
 				<a
 					className=" bg-[#636363] p-2 text-white rounded-md"
-					href={row.row.original.pdf}
+					href={row.row.original.ruta_pdf}
 					target="_blank"
 					rel="noreferrer"
 				>

@@ -21,6 +21,7 @@ interface Empleado {
 	fecha_ingreso: string;
 	fecha_salida?: string | null;
 	estado?: boolean;
+	rol?: string; // 'admin' o 'empleado'
 }
 
 // Obtener todos los productos
@@ -28,6 +29,19 @@ export async function getEmpleados(): Promise<Empleado[]> {
 	const { data, error } = await supabase
 		.from('empleados')
 		.select('*, tienda:tiendas(nombre)');
+
+	if (error) {
+		console.error('Error fetching products:', error);
+		throw new Error('Error fetching products');
+	}
+	return data || [];
+}
+
+export async function getEmpleado(user_id: string): Promise<Empleado[]> {
+	const { data, error } = await supabase
+		.from('empleados')
+		.select('*')
+		.eq('auth_user_id', user_id);
 
 	if (error) {
 		console.error('Error fetching products:', error);

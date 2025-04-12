@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { getEmpleados } from '@/app/actions/empleadoActions';
+import { getEmpleados, getEmpleado } from '@/app/actions/empleadoActions';
 
 interface Empleado {
 	id?: number;
@@ -14,6 +14,7 @@ interface Empleado {
 	fecha_ingreso: string;
 	fecha_salida?: string | null;
 	estado?: boolean;
+	rol?: string; // 'admin' o 'empleado'
 }
 
 type Store = {
@@ -23,15 +24,18 @@ type Store = {
 
 type ProductStore = {
 	empleados: Empleado[];
+	empleado?: Empleado; // Add this property to fix the issue
 	stores: Store[];
 	isLoading: boolean;
 	isShowingPrice: boolean;
 	error: string | null;
 	fetchGetEmpleado: () => Promise<void>;
+	fetchGetEmpleadoDni: (id: string) => Promise<Empleado[] | undefined>;
 };
 
 export const useEmpleadoStore = create<ProductStore>((set) => ({
 	empleados: [],
+	emplado: {},
 	stores: [],
 	isLoading: false,
 	isShowingPrice: false,
@@ -44,9 +48,27 @@ export const useEmpleadoStore = create<ProductStore>((set) => ({
 		} catch (error) {
 			set({
 				error:
-					error instanceof Error ? error.message : 'Failed to fetch products',
+					error instanceof Error ? error.message : 'Failed to fetch empleados',
 				isLoading: false,
 			});
+		}
+	},
+	fetchGetEmpleadoDni: async (id: string) => {
+		set({ isLoading: true, error: null });
+		try {
+			const empleados = await getEmpleado(id);
+			set({
+				empleado: empleados.length > 0 ? empleados[0] : undefined,
+				isLoading: false,
+			});
+			return empleados.length > 0 ? empleados : undefined; // Ensure the return type matches Empleado[] | undefined
+		} catch (error) {
+			set({
+				error:
+					error instanceof Error ? error.message : 'Failed to fetch empleado',
+				isLoading: false,
+			});
+			return [];
 		}
 	},
 }));

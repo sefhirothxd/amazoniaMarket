@@ -17,30 +17,77 @@ export function LoginForm() {
 	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setLoading(true);
-		const { error } = await supabase.auth.signInWithPassword({
-			email,
-			password,
-		});
-		if (error) {
-			console.log('🚀 ~ handleLogin ~ error:', error);
+
+		const { data: authData, error: authError } =
+			await supabase.auth.signInWithPassword({
+				email,
+				password,
+			});
+
+		if (authError || !authData.session?.user) {
+			console.log('🚀 ~ handleLogin ~ error:', authError);
 			toast({
 				title: 'Error',
-				description: error.message,
-				action: <ToastAction altText="Goto schedule to undo">Undo</ToastAction>,
+				description: authError?.message || 'No se pudo iniciar sesión',
+				action: <ToastAction altText="Undo">Intentar de nuevo</ToastAction>,
 			});
-		} else {
-			router.push('/dashboard');
+			setLoading(false);
+			return;
 		}
+
+		const userId = authData.session.user.id;
+
+		// Consultar la tabla empleados para obtener el rol
+		const { data: empleadoData, error: empleadoError } = await supabase
+			.from('empleados')
+			.select('rol')
+			.eq('auth_user_id', userId)
+			.single();
+
+		if (empleadoError || !empleadoData) {
+			toast({
+				title: 'Error',
+				description: 'No se pudo obtener el rol del usuario.',
+			});
+			setLoading(false);
+			return;
+		}
+
+		// Redirige según el rol
+		if (empleadoData.rol === 'admin') {
+			router.push('/dashboard');
+		} else {
+			router.push('/intranet');
+		}
+
 		setLoading(false);
 	};
 
 	useEffect(() => {
 		const checkSession = async () => {
-			const { data } = await supabase.auth.getSession();
+			const { data: sessionData } = await supabase.auth.getSession();
 
-			// Si no hay una sesión activa, redirige a la página de login
-			if (data.session) {
-				router.push('/dashboard');
+			if (sessionData.session?.user) {
+				const userId = sessionData.session.user.id;
+
+				// Buscar el rol en la tabla empleados
+				const { data: empleadoData, error: empleadoError } = await supabase
+					.from('empleados')
+					.select('rol')
+					.eq('auth_user_id', userId)
+					.single();
+
+				if (empleadoError || !empleadoData) {
+					console.log('Error al obtener el rol del empleado:', empleadoError);
+					return;
+				}
+
+				// Redirigir según el rol
+				if (empleadoData.rol === 'admin') {
+					router.push('/dashboard');
+				} else {
+					router.push('/intranet');
+				}
 			}
 		};
 

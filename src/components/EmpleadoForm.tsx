@@ -64,18 +64,19 @@ export default function EmpleadoForm({ onClose }: EmpleadoFormProps) {
 	const { fetchGetEmpleado } = useEmpleadoStore();
 	const { toast } = useToast();
 	const onSubmit = async (data: FormData) => {
-		// const { error } = await supabase.from('empleados').insert([data]);
-		const { error } = await supabase.from('empleados').insert({
-			dni: data.dni,
-			nombres: data.nombres,
-			apellidos: data.apellidos,
-			correo: data.correo,
-			telefono: data.telefono,
-			direccion: data.direccion,
-			fecha_nacimiento: data.fecha_nacimiento,
-			fecha_ingreso: data.fecha_ingreso,
-			tienda_id: data.tienda_id,
+		const response = await fetch('/api/registrar-empleado', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(data),
 		});
+
+		const result = await response.json();
+		console.log('result', result);
+		if (!response.ok) {
+			alert('Error: ' + result.error);
+			return;
+		}
+
 		// Actualiza la lista de empleados después de registrar uno nuevo
 		await fetchGetEmpleado();
 		// Muestra un mensaje de éxito
@@ -87,10 +88,6 @@ export default function EmpleadoForm({ onClose }: EmpleadoFormProps) {
 
 		reset();
 		onClose(); // Cierra el modal después de registrar
-
-		if (error) {
-			alert('Error al registrar: ' + error.message);
-		}
 	};
 
 	useEffect(() => {

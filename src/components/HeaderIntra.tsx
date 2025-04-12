@@ -1,15 +1,26 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { icons } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import ModalPdf from './CargaPdf';
 import EmpleadoForm from './EmpleadoForm';
+import { useEmpleadoStore } from '@/store/useEmpleadoStore';
+import { supabase } from '@/lib/supabase';
 
 const HeaderIntra = () => {
 	const pathname = usePathname();
 	const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar el modal
 	const [isModalOpenEmple, setIsModalOpenEmple] = useState(false); // Estado para controlar el modal
+	interface Empleado {
+		rol?: string; // Define the expected properties of isEmpleado
+		nombres?: string;
+	}
+
+	const [isEmpleado, setIsEmpleado] = useState<Empleado>({}); // Estado para controlar el modal
+
+	//obtener informacion del empleado
+	const { fetchGetEmpleadoDni } = useEmpleadoStore();
 
 	// Función para abrir el modal
 	const openModal = () => {
@@ -26,6 +37,26 @@ const HeaderIntra = () => {
 	const closeModalEmp = () => {
 		setIsModalOpenEmple(false);
 	};
+
+	const fetchData = async () => {
+		const { data: sessionData } = await supabase.auth.getSession();
+		const userId = sessionData?.session?.user.id;
+
+		// Aquí puedes realizar la llamada a la API o cualquier otra lógica necesaria
+		if (userId) {
+			const res = await fetchGetEmpleadoDni(userId);
+			console.log('Empleado:', res?.[0] ?? 'No empleado data available');
+			setIsEmpleado(res?.[0] ?? {}); // Guardar el empleado en el estado
+		} else {
+			console.error('No hay userId disponible');
+		} // Updated to match the function signature
+
+		// console.log('res', res);
+	};
+
+	useEffect(() => {
+		fetchData();
+	}, []); // Se ejecuta una vez al montar el componente
 
 	return (
 		<div
@@ -78,9 +109,11 @@ const HeaderIntra = () => {
 
 			<div className="flex items-center gap-4">
 				<div className="flex flex-col items-end gap-0">
-					<p className="text-[22px] font-semibold">Hola👋Antonia</p>
-					<small className="font-semibold text-[18px] text-[#949494]">
-						Administrador
+					<p className="text-[22px] font-semibold capitalize">
+						Hola👋 {isEmpleado?.nombres}
+					</p>
+					<small className="font-semibold text-[18px] text-[#949494] capitalize">
+						{isEmpleado?.rol}
 					</small>
 				</div>
 				<div className="bg-black w-[50px] h-[50px] rounded-full"></div>
