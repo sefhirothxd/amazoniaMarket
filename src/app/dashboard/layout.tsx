@@ -7,6 +7,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { supabase } from '@/lib/supabase';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+
 export default function Page({ children }: { children: React.ReactNode }) {
 	const router = useRouter();
 	const [loading, setLoading] = useState(true);
