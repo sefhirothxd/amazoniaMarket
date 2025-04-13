@@ -1,32 +1,56 @@
 'use client';
 import { useState, useEffect } from 'react';
 
-import { Empleado, columns } from './columns';
+import { FormattedBoleta, columns } from './columns';
 import { DataTable } from './data-table';
 import { supabase } from '@/lib/supabase';
-
-async function getData(): Promise<Empleado[]> {
-	// Fetch data from your API here.
-
-	const { data, error } = await supabase.from('empleados').select('*');
-	console.log('data:', data);
-	console.log('error:', error);
-
-	// getdata from api
-
-	return [];
-}
+import { useEmpleadoStore } from '@/store/useEmpleadoStore';
 
 export default function DemoPage() {
-	const [data, setData] = useState<Empleado[]>([]);
+	const [data, setData] = useState<FormattedBoleta[]>([]);
+	const { empleado } = useEmpleadoStore();
+
+	async function fetchData(id: number) {
+		const { data, error } = await supabase
+			.from('boletas_pago')
+			.select(
+				`
+				anio,
+				mes,
+				ruta_pdf,
+				empleado:empleados(
+				  nombres,
+				  apellidos,
+				  dni,
+				  tienda:tiendas(nombre)
+				)
+			  `
+			)
+			.eq('empleado_id', id);
+
+		if (error) {
+			console.error('Error fetching data:', error);
+			return;
+		}
+
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const formattedData = (data || []).map((boleta: any) => ({
+			fecha: `${boleta.mes}-${boleta.anio}`,
+			nombres: boleta.empleado?.nombres ?? '',
+			apellidos: boleta.empleado?.apellidos ?? '',
+			dni: boleta.empleado?.dni ?? '',
+			tienda: boleta.empleado?.tienda?.nombre ?? '',
+			ruta_pdf: boleta.ruta_pdf,
+		}));
+
+		setData(formattedData);
+	}
 
 	useEffect(() => {
-		async function fetchData() {
-			const result = await getData();
-			setData(result);
+		if (empleado?.id) {
+			fetchData(empleado.id);
 		}
-		fetchData();
-	}, []);
+	}, [empleado?.id]);
 
 	return (
 		<div className="container mx-auto py-10">

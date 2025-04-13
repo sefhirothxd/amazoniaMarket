@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { Empleado, columns } from './columns';
 import { DataTable } from './data-table';
 import { supabase } from '@/lib/supabase';
+import { useEmpleadoStore } from '@/store/useEmpleadoStore';
 
 async function getData(): Promise<Empleado[]> {
 	// Fetch data from your API here.
@@ -37,15 +38,24 @@ async function getData(): Promise<Empleado[]> {
 }
 
 export default function DemoPage() {
+	const { empleado } = useEmpleadoStore();
 	const [data, setData] = useState<Empleado[]>([]);
 
 	useEffect(() => {
-		async function fetchData() {
-			const result = await getData();
-			setData(result);
+		if (empleado?.rol === 'admin') {
+			async function fetchData() {
+				const result = await getData();
+				console.log('result:', result);
+				setData(result);
+			}
+			fetchData();
 		}
-		fetchData();
-	}, []);
+	}, [empleado?.rol]);
+
+	if (empleado?.rol !== 'admin') {
+		// Si no es admin, puedes redirigir o mostrar un mensaje
+		return <div>No tienes permisos para ver esta página</div>;
+	}
 
 	return (
 		<div className="container mx-auto py-10">

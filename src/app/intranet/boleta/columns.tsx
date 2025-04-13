@@ -1,54 +1,47 @@
-'use client';
-
 import { ColumnDef } from '@tanstack/react-table';
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-export type Empleado = {
-	id: string;
+export interface FormattedBoleta {
 	fecha: string;
-	nombre: string;
-	apellido: string;
-	tienda: string;
+	nombres: string;
+	apellidos: string;
 	dni: string;
-	pdf: string;
-};
+	tienda: string;
+	ruta_pdf: string;
+}
 
-export const columns: ColumnDef<Empleado>[] = [
+export const columns: ColumnDef<FormattedBoleta>[] = [
 	{
-		header: 'Fecha',
 		accessorKey: 'fecha',
+		header: 'Fecha',
 	},
 	{
-		header: 'Nombre',
-		accessorKey: 'nombre',
+		accessorKey: 'nombres',
+		header: 'Nombres',
 	},
 	{
-		header: 'Apellido',
-		accessorKey: 'apellido',
+		accessorKey: 'apellidos',
+		header: 'Apellidos',
 	},
 	{
-		header: 'Tienda',
-		accessorKey: 'tienda',
-	},
-	{
-		header: 'DNI',
 		accessorKey: 'dni',
+		header: 'DNI',
 	},
 	{
+		accessorKey: 'tienda',
+		header: 'Tienda',
+	},
+	{
+		accessorKey: 'ruta_pdf',
 		header: 'PDF',
-		accessorKey: 'pdf',
-		cell: (row) => {
-			return (
-				<a
-					className=" bg-[#636363] p-2 text-white rounded-md"
-					href={row.row.original.pdf}
-					target="_blank"
-					rel="noreferrer"
-				>
-					Ver PDF
-				</a>
-			);
-		},
+		cell: ({ row }) => (
+			<a
+				className=" bg-[#636363] p-2 text-white rounded-md"
+				href={row.original.ruta_pdf}
+				target="_blank"
+				rel="noreferrer"
+			>
+				Ver PDF
+			</a>
+		),
 	},
 ];

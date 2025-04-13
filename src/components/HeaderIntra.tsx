@@ -116,7 +116,11 @@ const HeaderIntra = () => {
 						{isEmpleado?.rol}
 					</small>
 				</div>
-				<div className="bg-black w-[50px] h-[50px] rounded-full"></div>
+				<div className="bg-black w-[50px] h-[50px] rounded-full flex items-center justify-center">
+					<p className="text-white text-[18px] uppercase">
+						{isEmpleado?.nombres?.charAt(0)}
+					</p>
+				</div>
 			</div>
 
 			{/* Renderiza el modal si isModalOpen es true */}

@@ -4,11 +4,13 @@ import Link from 'next/link';
 import React from 'react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+import { useEmpleadoStore } from '@/store/useEmpleadoStore';
 import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
 const SiderbarIntra = () => {
+	const { empleado } = useEmpleadoStore();
 	const router = useRouter();
-	const links = [
+	const linksAdmin = [
 		{
 			name: 'Panel',
 			url: '/intranet/panel',
@@ -22,6 +24,33 @@ const SiderbarIntra = () => {
 		{
 			name: 'Boletas',
 			url: '/intranet/boletas',
+			icons: icons.FileText,
+		},
+		{
+			name: 'Tiendas',
+			url: '',
+			icons: icons.ShoppingBag,
+		},
+		{
+			name: 'Movilidad',
+			url: '',
+			icons: icons.Truck,
+		},
+	];
+	const linksUser = [
+		{
+			name: 'Panel',
+			url: '/intranet/panel',
+			icons: icons.Activity,
+		},
+		{
+			name: 'Empleado',
+			url: '/intranet/empleado',
+			icons: icons.User,
+		},
+		{
+			name: 'Boleta',
+			url: '/intranet/boleta',
 			icons: icons.FileText,
 		},
 		{
@@ -59,21 +88,39 @@ const SiderbarIntra = () => {
 					</picture>
 				</Link>
 				<ul className="flex-col flex justify-between items-start pl-[0px] lg:pl-[30px] gap-[10px]">
-					{links.map((link, index) => (
-						<li key={index} className=" lg:w-[255px] text-[18px] w-full">
-							<Link
-								href={link.url}
-								className={
-									pathname == link.url
-										? 'flex items-center space-x-2 gap-[12px] bg-black text-white pl-[18px]  lg:pl-[30px] py-[15px] rounded-full font-semibold '
-										: 'flex items-center space-x-2 gap-[12px] hover:bg-black hover:text-white pl-[18px]   lg:pl-[30px] py-[15px] rounded-full font-semibold '
-								}
-							>
-								{link.icons && React.createElement(link.icons, { size: 24 })}
-								<p className="hidden lg:block">{link.name}</p>
-							</Link>
-						</li>
-					))}
+					{empleado?.rol === 'admin'
+						? linksAdmin.map((link, index) => (
+								<li key={index} className=" lg:w-[255px] text-[18px] w-full">
+									<Link
+										href={link.url}
+										className={
+											pathname == link.url
+												? 'flex items-center space-x-2 gap-[12px] bg-black text-white pl-[18px]  lg:pl-[30px] py-[15px] rounded-full font-semibold '
+												: 'flex items-center space-x-2 gap-[12px] hover:bg-black hover:text-white pl-[18px]   lg:pl-[30px] py-[15px] rounded-full font-semibold '
+										}
+									>
+										{link.icons &&
+											React.createElement(link.icons, { size: 24 })}
+										<p className="hidden lg:block">{link.name}</p>
+									</Link>
+								</li>
+						  ))
+						: linksUser.map((link, index) => (
+								<li key={index} className=" lg:w-[255px] text-[18px] w-full">
+									<Link
+										href={link.url}
+										className={
+											pathname == link.url
+												? 'flex items-center space-x-2 gap-[12px] bg-black text-white pl-[18px]  lg:pl-[30px] py-[15px] rounded-full font-semibold '
+												: 'flex items-center space-x-2 gap-[12px] hover:bg-black hover:text-white pl-[18px]   lg:pl-[30px] py-[15px] rounded-full font-semibold '
+										}
+									>
+										{link.icons &&
+											React.createElement(link.icons, { size: 24 })}
+										<p className="hidden lg:block">{link.name}</p>
+									</Link>
+								</li>
+						  ))}
 				</ul>
 			</nav>
 			<button
