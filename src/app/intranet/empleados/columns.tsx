@@ -54,15 +54,15 @@ export const columns: ColumnDef<Empleado>[] = [
 	},
 	{
 		accessorKey: 'fecha_nacimiento',
-		header: 'Fecha de Nacimiento',
+		header: 'F. de Nacimiento',
 	},
 	{
 		accessorKey: 'fecha_ingreso',
-		header: 'Fecha de Ingreso',
+		header: 'F. de Ingreso',
 	},
 	{
 		accessorKey: 'fecha_salida',
-		header: 'Fecha de Salida',
+		header: 'F. de Salida',
 	},
 	{
 		accessorKey: 'estado',

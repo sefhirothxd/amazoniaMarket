@@ -14,7 +14,7 @@ export default function DemoPage() {
 	}, [fetchGetEmpleado]);
 
 	return (
-		<div className="container mx-auto py-10">
+		<div className="w-full mx-auto py-10">
 			<DataTable columns={columns} data={empleados} />
 		</div>
 	);

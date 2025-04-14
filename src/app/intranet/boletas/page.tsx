@@ -58,7 +58,7 @@ export default function DemoPage() {
 	}
 
 	return (
-		<div className="container mx-auto py-10">
+		<div className=" w-full mx-auto py-10">
 			<DataTable columns={columns} data={data} />
 		</div>
 	);

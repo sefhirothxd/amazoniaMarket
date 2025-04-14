@@ -1,4 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table';
+import { FileDown } from 'lucide-react';
 
 export interface FormattedBoleta {
 	fecha: string;
@@ -34,13 +35,8 @@ export const columns: ColumnDef<FormattedBoleta>[] = [
 		accessorKey: 'ruta_pdf',
 		header: 'PDF',
 		cell: ({ row }) => (
-			<a
-				className=" bg-[#636363] p-2 text-white rounded-md"
-				href={row.original.ruta_pdf}
-				target="_blank"
-				rel="noreferrer"
-			>
-				Ver PDF
+			<a href={row.original.ruta_pdf} target="_blank" rel="noreferrer">
+				<FileDown className="h-6 w-h-6" />
 			</a>
 		),
 	},

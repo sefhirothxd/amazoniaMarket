@@ -1,6 +1,7 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
+import { FileDown } from 'lucide-react';
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -44,13 +45,8 @@ export const columns: ColumnDef<Empleado>[] = [
 		accessorKey: 'ruta_pdf',
 		cell: (row) => {
 			return (
-				<a
-					className=" bg-[#636363] p-2 text-white rounded-md"
-					href={row.row.original.ruta_pdf}
-					target="_blank"
-					rel="noreferrer"
-				>
-					Ver PDF
+				<a href={row.row.original.ruta_pdf} target="_blank" rel="noreferrer">
+					<FileDown className="h-6 w-h-6" />
 				</a>
 			);
 		},
