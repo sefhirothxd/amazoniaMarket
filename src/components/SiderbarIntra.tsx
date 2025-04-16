@@ -39,13 +39,8 @@ const SiderbarIntra = () => {
 	];
 	const linksUser = [
 		{
-			name: 'Panel',
-			url: '/intranet/panel',
-			icons: icons.Activity,
-		},
-		{
-			name: 'Empleado',
-			url: '/intranet/empleado',
+			name: 'Usuario',
+			url: '/intranet/usuario',
 			icons: icons.User,
 		},
 		{
@@ -76,13 +71,24 @@ const SiderbarIntra = () => {
 	return (
 		<div className="flex flex-col justify-between gap-4 min-h-screen p-4 bg-gray-100  w-[100px] pt-[30px] lg:min-w-[350px]">
 			<nav className="w-full">
-				<Link href="/">
+				<Link href="/" className="lg:block hidden">
 					<picture className="flex justify-center">
 						<Image
 							src="/logo.svg"
 							alt="logo amazonia"
 							width={250}
 							height={50}
+							className="mb-[56px]"
+						/>
+					</picture>
+				</Link>
+				<Link href="/" className="lg:hidden block">
+					<picture className="flex justify-center">
+						<Image
+							src="/logo-mini.svg"
+							alt="logo amazonia"
+							width={40}
+							height={40}
 							className="mb-[56px]"
 						/>
 					</picture>
@@ -111,8 +117,8 @@ const SiderbarIntra = () => {
 										href={link.url}
 										className={
 											pathname == link.url
-												? 'flex items-center space-x-2 gap-[12px] bg-black text-white pl-[18px]  lg:pl-[30px] py-[15px] rounded-full font-semibold '
-												: 'flex items-center space-x-2 gap-[12px] hover:bg-black hover:text-white pl-[18px]   lg:pl-[30px] py-[15px] rounded-full font-semibold '
+												? 'flex items-center space-x-2 gap-[12px] bg-black text-white justify-center lg:justify-start lg:pl-[30px] py-[15px] rounded-full font-semibold '
+												: 'flex items-center space-x-2 gap-[12px] hover:bg-black hover:text-white justify-center lg:justify-start   lg:pl-[30px] py-[15px] rounded-full font-semibold '
 										}
 									>
 										{link.icons &&

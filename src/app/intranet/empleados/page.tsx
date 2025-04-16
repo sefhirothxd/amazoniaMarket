@@ -13,7 +13,7 @@ export default function DemoPage() {
 		if (empleado?.rol === 'admin') {
 			fetchGetEmpleado();
 		}
-	}, [fetchGetEmpleado]);
+	}, [empleado?.rol]);
 
 	if (empleado?.rol !== 'admin') {
 		// Si no es admin, puedes redirigir o mostrar un mensaje
@@ -21,7 +21,7 @@ export default function DemoPage() {
 	}
 
 	return (
-		<div className="  w-full mx-auto py-10">
+		<div className="container  mx-auto py-10">
 			<DataTable columns={columns} data={empleados} />
 		</div>
 	);

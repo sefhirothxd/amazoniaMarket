@@ -60,7 +60,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 	return (
 		<div className={`flex gap-4 w-full  ${inter.className} `}>
 			<SiderbarIntra />
-			<main className="flex-1 flex flex-col gap-4 p-4">
+			<main className="flex-1 flex flex-col gap-4 p-4 overflow-auto ">
 				<HeaderIntra />
 				{children}
 			</main>

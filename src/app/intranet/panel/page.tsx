@@ -11,11 +11,22 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import { Store, User, FileArchive } from 'lucide-react';
+import { useEmpleadoStore } from '@/store/useEmpleadoStore';
+import { useRouter } from 'next/navigation';
 
 export default function PanelPage() {
 	const [usuarios, setUsuarios] = useState(0);
 	const [tiendas, setTiendas] = useState(0);
 	const [boletas, setBoletas] = useState(0);
+
+	const { empleado } = useEmpleadoStore();
+	const router = useRouter(); // ✅ hook de redirección
+
+	useEffect(() => {
+		if (empleado?.rol === 'usuario') {
+			router.replace('/intranet/usuario'); // ✅ redirección si no es admin
+		}
+	}, [empleado, router]);
 
 	useEffect(() => {
 		const fetchCounts = async () => {

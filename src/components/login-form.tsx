@@ -57,7 +57,7 @@ export function LoginForm() {
 		if (empleadoData.rol === 'admin') {
 			router.push('/dashboard');
 		} else {
-			router.push('/intranet');
+			router.push('/intranet/usuario');
 		}
 
 		setLoading(false);
@@ -86,7 +86,7 @@ export function LoginForm() {
 				if (empleadoData.rol === 'admin') {
 					router.push('/dashboard');
 				} else {
-					router.push('/intranet');
+					router.push('/intranet/usuario');
 				}
 			}
 		};
