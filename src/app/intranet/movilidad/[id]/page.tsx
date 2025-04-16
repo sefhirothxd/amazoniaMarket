@@ -94,122 +94,158 @@ export default function MovilidadDiasPage() {
 		setShowModal(false);
 	};
 
-	const generatePDF = () => {
-		if (!mes) return;
-
+	const generatePDF = (mes: Mes & { dias: Dia[] }) => {
 		const doc = new jsPDF();
-
-		// Configuración de márgenes
+		const pageWidth = doc.internal.pageSize.getWidth();
+		const pageHeight = doc.internal.pageSize.getHeight();
 		const margin = 15;
-		const pageWidth = doc.internal.pageSize.width;
-		const pageHeight = doc.internal.pageSize.height;
+		const cellHeight = 8;
+		const cellWidths = [30, 100, 30];
+		const headers = ['Día', 'Motivo', 'Monto (S/)'];
+		let currentY = margin + 50;
 
-		// Añadir razón social y nombre de la empresa en dos columnas
-		doc.setFontSize(14);
-		doc.text('CAMU MARKET', margin, margin);
-		doc.setFontSize(10);
-		doc.text('RUC: 20612672335', margin, margin + 7);
+		// Fecha y hora de emisión
+		const fechaHoraEmision = new Date();
+		const fechaStr = fechaHoraEmision.toLocaleDateString();
+		const horaStr = fechaHoraEmision.toLocaleTimeString();
 
-		// Espacio entre los datos de la empresa y los del empleado
-		doc.setFontSize(12);
-		doc.text('Información del Empleado', margin + 100, margin);
-		doc.text(
-			`Empleado: ${mes.empleados.nombres} ${mes.empleados.apellidos}`,
-			margin + 100,
-			margin + 7
-		);
-		doc.text(`DNI: ${mes.empleados.dni}`, margin + 100, margin + 14);
+		// Encabezado general
+		const drawHeader = () => {
+			doc.setFontSize(16);
+			doc.setFont('helvetica', 'bold');
+			doc.text('CAMU MARKET', pageWidth / 2, margin, { align: 'center' });
 
-		// Añadir fecha y hora de emisión
-		const date = new Date();
-		doc.text(
-			`Fecha de Emisión: ${date.toLocaleDateString()}`,
-			margin,
-			margin + 21
-		);
-		doc.text(
-			`Hora de Emisión: ${date.toLocaleTimeString()}`,
-			margin,
-			margin + 28
-		);
+			doc.setFontSize(10);
+			doc.text('RUC: 20612672335', pageWidth / 2, margin + 6, {
+				align: 'center',
+			});
 
-		// Título de la tabla de gastos
-		doc.setFontSize(16);
-		doc.text('Detalle de Gastos de Movilidad', margin, margin + 40);
-
-		// Crear tabla con encabezados
-		const tableColumnWidths = [20, 60, 60, 40]; // Ancho de las columnas (Día, Destino, Motivo, Monto)
-		const startY = margin + 50; // Inicio de la tabla en la página
-		let currentY = startY;
-
-		// Encabezados de la tabla
-		doc.setFontSize(10);
-		doc.text('Día', margin, currentY);
-		doc.text('Destino', margin + tableColumnWidths[0], currentY);
-		doc.text(
-			'Motivo',
-			margin + tableColumnWidths[0] + tableColumnWidths[1],
-			currentY
-		);
-		doc.text(
-			'Monto (S/)',
-			margin +
-				tableColumnWidths[0] +
-				tableColumnWidths[1] +
-				tableColumnWidths[2],
-			currentY
-		);
-		currentY += 7;
-
-		// Dibujar las filas de la tabla
-		dias.forEach((dia) => {
-			doc.text(`${dia.dia}`, margin, currentY);
+			doc.setFontSize(8);
 			doc.text(
-				`${dia.destino || '-'}`,
-				margin + tableColumnWidths[0],
-				currentY
+				`Emitido: ${fechaStr} ${horaStr}`,
+				pageWidth - margin,
+				margin + 6,
+				{ align: 'right' }
 			);
+
+			doc.setLineWidth(0.5);
+			doc.line(margin, margin + 12, pageWidth - margin, margin + 12);
+
+			doc.setFontSize(14);
+			doc.setFont('helvetica', 'bold');
+			doc.text('INFORME DE GASTOS DE MOVILIDAD', pageWidth / 2, margin + 20, {
+				align: 'center',
+			});
+
+			// Datos del trabajador (completos en una sola sección)
+			const infoStartY = margin + 35;
+			doc.setFontSize(12);
+			doc.setFont('helvetica', 'normal');
 			doc.text(
-				`${dia.motivo || '-'}`,
-				margin + tableColumnWidths[0] + tableColumnWidths[1],
-				currentY
+				`Nombres: ${mes.empleados.nombres} ${mes.empleados.apellidos}`,
+				margin,
+				infoStartY
 			);
+			doc.text(`DNI: ${mes.empleados.dni}`, margin, infoStartY + 6);
+			// doc.text(`Cargo: ${mes.empleados.cargo}`, margin, infoStartY + 12);
+			// doc.text(
+			// 	`Tienda: ${mes.empleados.tienda.nombre}`,
+			// 	margin,
+			// 	infoStartY + 18
+			// );
 			doc.text(
-				`${dia.monto ?? '-'}`,
-				margin +
-					tableColumnWidths[0] +
-					tableColumnWidths[1] +
-					tableColumnWidths[2],
-				currentY
+				`Mes: ${nombreMes(mes.mes)} ${mes.anio}`,
+				margin,
+				infoStartY + 24
 			);
-			currentY += 7;
+
+			// Cabecera tabla
+			currentY = infoStartY + 35;
+			doc.setFont('helvetica', 'bold');
+			doc.setFontSize(10);
+			doc.setFillColor(220, 220, 220);
+			doc.rect(margin, currentY - 5, pageWidth - margin * 2, cellHeight, 'F');
+
+			let x = margin;
+			headers.forEach((header, i) => {
+				doc.text(header, x + 2, currentY);
+				x += cellWidths[i];
+			});
+
+			currentY += cellHeight;
+		};
+
+		drawHeader();
+
+		doc.setFont('helvetica', 'normal');
+		mes.dias.forEach((dia: Dia) => {
+			if (currentY + cellHeight > pageHeight - 40) {
+				doc.addPage();
+				drawHeader();
+			}
+
+			let x = margin;
+			const row = [
+				String(dia.dia),
+				dia.motivo || '',
+				(dia.monto ?? 0).toFixed(2),
+			];
+			row.forEach((cell, i) => {
+				doc.text(cell, x + 2, currentY);
+				x += cellWidths[i];
+			});
+			currentY += cellHeight;
 		});
 
-		// Total gastado
-		const totalGastado = dias.reduce((acc, dia) => acc + (dia.monto || 0), 0);
-		doc.setFontSize(12);
-		doc.text(
-			`Total Gastado: S/ ${totalGastado.toFixed(2)}`,
-			margin,
-			currentY + 10
+		const total = mes.dias.reduce(
+			(acc: number, dia: Dia) => acc + (dia.monto ?? 0),
+			0
 		);
 
-		// Línea para la firma
-		const signatureLineY = currentY + 20;
-		doc.line(margin, signatureLineY, pageWidth - margin, signatureLineY);
-		doc.text('Firma del Empleado', margin + 10, signatureLineY + 5);
-		doc.text(
-			`${mes.empleados.nombres} ${mes.empleados.apellidos}`,
-			margin + 100,
-			signatureLineY + 5
-		);
+		if (currentY + 30 > pageHeight - 40) {
+			doc.addPage();
+			drawHeader();
+		}
 
-		// Ajuste de la página
+		doc.setFont('helvetica', 'bold');
+		doc.text(`Total: S/ ${total.toFixed(2)}`, margin, currentY + 10);
+
+		// Firma (más corta) + datos completos del trabajador
+		const signatureLineY = currentY + 30;
+		const lineWidth = 60;
+		doc.line(margin, signatureLineY, margin + lineWidth, signatureLineY);
 		doc.setFontSize(10);
-		doc.text('Página 1', pageWidth - 30, pageHeight - 10);
+		doc.setFont('helvetica', 'normal');
 
-		// Guardar el archivo PDF
-		doc.save('gastos_movilidad.pdf');
+		// Datos bajo la firma
+		const datosFirmaY = signatureLineY + 5;
+		doc.setFontSize(9);
+		doc.text(
+			`Nombres: ${mes.empleados.nombres} ${mes.empleados.apellidos}`,
+			margin,
+			datosFirmaY
+		);
+		doc.text(`DNI: ${mes.empleados.dni}`, margin, datosFirmaY + 5);
+		// doc.text(`Cargo: ${mes.empleados.cargo}`, margin, datosFirmaY + 10);
+		// doc.text(
+		// 	`Tienda: ${mes.empleados.tienda.nombre}`,
+		// 	margin,
+		// 	datosFirmaY + 15
+		// );
+
+		// Número de página
+		const totalPages = doc.getNumberOfPages();
+		for (let i = 1; i <= totalPages; i++) {
+			doc.setPage(i);
+			doc.setFontSize(10);
+			doc.text(`Página ${i} de ${totalPages}`, pageWidth / 2, pageHeight - 10, {
+				align: 'center',
+			});
+		}
+
+		doc.save(
+			`movilidad_${mes.empleados.nombres}_${nombreMes(mes.mes)}_${mes.anio}.pdf`
+		);
 	};
 
 	return (
@@ -228,7 +264,7 @@ export default function MovilidadDiasPage() {
 
 			{/* Botón para generar PDF */}
 			<button
-				onClick={generatePDF}
+				onClick={() => mes && generatePDF({ ...mes, dias })}
 				className="bg-green-500 text-white p-2 rounded mb-4"
 			>
 				Generar PDF
