@@ -55,7 +55,7 @@ const SiderbarIntra = () => {
 		},
 		{
 			name: 'Movilidad',
-			url: '',
+			url: '/intranet/movilidad',
 			icons: icons.Truck,
 		},
 	];
@@ -69,7 +69,7 @@ const SiderbarIntra = () => {
 	};
 
 	return (
-		<div className="flex flex-col justify-between gap-4 min-h-screen p-4 bg-gray-100  w-[100px] pt-[30px] lg:min-w-[350px]">
+		<div className="flex flex-col justify-between gap-4 min-h-screen p-4 bg-white  w-[100px] pt-[30px] lg:min-w-[350px] ">
 			<nav className="w-full">
 				<Link href="/" className="lg:block hidden">
 					<picture className="flex justify-center">
