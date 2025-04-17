@@ -103,7 +103,7 @@ export default function MovilidadPage() {
 	};
 
 	return (
-		<div className="p-6">
+		<div className="p-6 bg-white rounded-lg shadow-md">
 			{empleado && (
 				<div className="mb-4">
 					<h2 className="text-xl font-bold">👤 {empleado.nombre}</h2>

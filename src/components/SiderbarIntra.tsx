@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import { useEmpleadoStore } from '@/store/useEmpleadoStore';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+
 const SiderbarIntra = () => {
 	const { empleado } = useEmpleadoStore();
 	const router = useRouter();
@@ -33,7 +34,7 @@ const SiderbarIntra = () => {
 		},
 		{
 			name: 'Movilidad',
-			url: '',
+			url: '/intranet/movilidadadmin',
 			icons: icons.Truck,
 		},
 	];
@@ -93,7 +94,7 @@ const SiderbarIntra = () => {
 						/>
 					</picture>
 				</Link>
-				<ul className="flex-col flex justify-between items-start pl-[0px] lg:pl-[30px] gap-[10px]">
+				<ul className="flex-col flex justify-between items-center gap-[10px]">
 					{empleado?.rol === 'admin'
 						? linksAdmin.map((link, index) => (
 								<li key={index} className=" lg:w-[255px] text-[18px] w-full">
@@ -131,9 +132,18 @@ const SiderbarIntra = () => {
 			</nav>
 			<button
 				onClick={handleLogout}
-				className="flex items-center justify-center gap-2 lg:w-[255px] lg:ml-[30px] p-4 text-white bg-red-500 rounded-full font-inter font-semibold"
+				className="flex items-center justify-center gap-2 lg:w-[255px] lg:ml-[30px] p-4 text-black rounded-full font-inter font-semibold "
 			>
-				<icons.LogOut size={24} />
+				<figure>
+					<Image
+						src="/btn-logout.svg"
+						alt="boton cerrar sesion"
+						layout="responsive"
+						width={31}
+						height={31}
+						className="w-[31px] h-[31px] block"
+					/>
+				</figure>
 				<p className="hidden lg:block">Cerrar sesión</p>
 			</button>
 		</div>

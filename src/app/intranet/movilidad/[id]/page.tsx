@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { createClient } from '@supabase/supabase-js';
 import { jsPDF } from 'jspdf';
+import Image from 'next/image';
 
 const supabase = createClient(
 	process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -249,13 +250,13 @@ export default function MovilidadDiasPage() {
 	};
 
 	return (
-		<div className="p-6">
+		<div className="p-6 bg-white rounded-lg shadow-md">
 			{mes && (
 				<div className="mb-4">
 					<h2 className="text-xl font-bold">
 						Movilidad - {nombreMes(mes.mes)} {mes.anio}
 					</h2>
-					<p>
+					<p className="capitalize">
 						Empleado: {mes.empleados.nombres} {mes.empleados.apellidos} (
 						{mes.empleados.dni})
 					</p>
@@ -296,9 +297,18 @@ export default function MovilidadDiasPage() {
 							<td className="p-2 border-gray-400 border-y py-4 ">
 								<button
 									onClick={() => handleEdit(d)}
-									className="text-blue-500 hover:underline"
+									className="bg-[#27BE4F] hover:underline p-2 flex items-center justify-center rounded-lg"
 								>
-									Editar
+									{/* //btn edit */}
+									<figure>
+										<Image
+											src="/edit.svg"
+											alt="boton editar"
+											width={18}
+											height={18}
+											className=""
+										/>
+									</figure>
 								</button>
 							</td>
 						</tr>
@@ -338,7 +348,7 @@ export default function MovilidadDiasPage() {
 								onChange={(e) => setMonto(Number(e.target.value))}
 							/>
 						</div>
-						<div className="flex justify-end">
+						<div className="flex justify-end gap-2">
 							<button
 								onClick={handleSave}
 								className="bg-blue-500 text-white p-2 rounded mr-2"
