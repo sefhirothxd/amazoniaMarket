@@ -117,11 +117,20 @@ export default function MovilidadPage() {
 					const fecha = new Date();
 					const mesActual = fecha.getMonth() + 1;
 					const anioActual = fecha.getFullYear();
-					const esMesActual = mes.mes === mesActual && mes.anio === anioActual;
+					const esMesActual =
+						mes.mes === mesActual &&
+						mes.anio === anioActual &&
+						mes.estado === 'abierto';
 
-					const color = esMesActual ? 'bg-green-500' : 'bg-red-400';
-					const icono = esMesActual ? '🔓' : '🔒';
-					const pointer = esMesActual ? 'cursor-pointer' : 'cursor-not-allowed';
+					const color =
+						esMesActual || mes.estado === 'abierto'
+							? 'bg-green-500'
+							: 'bg-red-400';
+					const icono = esMesActual || mes.estado === 'abierto' ? '🔓' : '🔒';
+					const pointer =
+						esMesActual || mes.estado === 'abierto'
+							? 'cursor-pointer'
+							: 'cursor-not-allowed';
 
 					const contenidoMes = (
 						<div
@@ -136,7 +145,7 @@ export default function MovilidadPage() {
 						</div>
 					);
 
-					return esMesActual ? (
+					return mes.estado === 'abierto' ? (
 						<Link href={`/intranet/movilidad/${mes.id}`} key={mes.id}>
 							{contenidoMes}
 						</Link>
