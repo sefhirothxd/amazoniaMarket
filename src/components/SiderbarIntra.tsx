@@ -37,6 +37,11 @@ const SiderbarIntra = () => {
 			url: '/intranet/movilidadadmin',
 			icons: icons.Truck,
 		},
+		{
+			name: 'Productos',
+			url: '/dashboard',
+			icons: icons.Package,
+		},
 	];
 	const linksUser = [
 		{

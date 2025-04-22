@@ -1,6 +1,5 @@
-'use client';
-
 import { ColumnDef } from '@tanstack/react-table';
+import { FileDown } from 'lucide-react';
 
 export type Empleado = {
 	id?: number;
@@ -9,20 +8,39 @@ export type Empleado = {
 	telefono: string;
 	direccion: string;
 	dni: string;
-	tienda_id: number;
-	tienda?: string;
+	tienda: {
+		nombre: string;
+	} | null;
 	correo: string;
 	fecha_nacimiento: string;
 	fecha_ingreso: string;
 	fecha_salida?: string | null;
 	estado?: boolean;
+	rol?: string;
+	cargo: {
+		nombre: string;
+	} | null;
+	fecha_renovacion?: string | null;
+	contrato_url?: string;
 };
 
 export const columns: ColumnDef<Empleado>[] = [
-	// {
-	// 	accessorKey: 'id',
-	// 	header: 'ID',
-	// },
+	{
+		accessorKey: 'fecha_ingreso',
+		header: () => <div className="w-[100px]">F. Ingreso</div>,
+		cell: ({ row }) => (
+			<div className="w-[100px] truncate">{row.getValue('fecha_ingreso')}</div>
+		),
+	},
+	{
+		accessorKey: 'fecha_renovacion',
+		header: () => <div className="w-[100px]">F. Renovación</div>,
+		cell: ({ row }) => (
+			<div className="w-[100px] truncate">
+				{row.getValue('fecha_renovacion')}
+			</div>
+		),
+	},
 	{
 		accessorKey: 'nombres',
 		header: 'Nombres',
@@ -32,41 +50,45 @@ export const columns: ColumnDef<Empleado>[] = [
 		header: 'Apellidos',
 	},
 	{
-		accessorKey: 'telefono',
-		header: 'Teléfono',
-	},
-	{
-		accessorKey: 'direccion',
-		header: 'Dirección',
-	},
-	{
 		accessorKey: 'dni',
 		header: 'DNI',
 	},
 	{
-		accessorKey: 'tienda.nombre',
-		header: 'Tienda',
+		accessorFn: (row) => row.cargo?.nombre ?? '—',
+		id: 'cargo',
+		header: () => <div className="w-[120px]">Cargo</div>,
+		cell: ({ row }) => (
+			<div className="w-[120px] truncate">{row.getValue('cargo')}</div>
+		),
 	},
-
 	{
 		accessorKey: 'correo',
 		header: 'Correo',
 	},
 	{
-		accessorKey: 'fecha_nacimiento',
-		header: 'F. de Nacimiento',
+		accessorKey: 'telefono',
+		header: 'Teléfono',
 	},
 	{
-		accessorKey: 'fecha_ingreso',
-		header: 'F. de Ingreso',
+		accessorFn: (row) => row.tienda?.nombre ?? '—',
+		id: 'tienda',
+		header: () => <div className="w-[120px]">Tienda</div>,
+		cell: ({ row }) => (
+			<div className="w-[120px] truncate">{row.getValue('tienda')}</div>
+		),
 	},
 	{
-		accessorKey: 'fecha_salida',
-		header: 'F. de Salida',
-	},
-	{
-		accessorKey: 'estado',
-		header: 'Estado',
-		cell: ({ row }) => (row.original.estado ? 'Activo' : 'Inactivo'),
+		header: 'Contrato',
+		accessorKey: 'contrato_url',
+		cell: ({ row }) => {
+			const url = row.original.contrato_url;
+			return url ? (
+				<a href={url} target="_blank" rel="noreferrer">
+					<FileDown className="h-6 w-6" />
+				</a>
+			) : (
+				<span>—</span>
+			);
+		},
 	},
 ];

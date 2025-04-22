@@ -3,56 +3,36 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { supabase } from '@/lib/supabase';
 import { useEffect, useState } from 'react';
-import { ToastAction } from '@/components/ui/toast';
-import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/lib/supabase';
 import { useEmpleadoStore } from '@/store/useEmpleadoStore';
+import { useToast } from '@/hooks/use-toast';
+import { ToastAction } from '@/components/ui/toast';
 
-// 📌 Esquema de validación con Yup
 const schema = yup.object().shape({
-	dni: yup
-		.string()
-		.length(8, 'El DNI debe tener 8 dígitos')
-		.required('El DNI es obligatorio'),
-	nombres: yup
-		.string()
-		.min(3, 'Mínimo 3 caracteres')
-		.required('El nombre es obligatorio'),
-	apellidos: yup
-		.string()
-		.min(3, 'Mínimo 3 caracteres')
-		.required('El apellido es obligatorio'),
-	correo: yup
-		.string()
-		.email('Correo inválido')
-		.required('El correo es obligatorio'),
+	dni: yup.string().length(8, 'Debe tener 8 dígitos').required(),
+	nombres: yup.string().min(3).required(),
+	apellidos: yup.string().min(3).required(),
+	correo: yup.string().email().required(),
 	telefono: yup
 		.string()
 		.matches(/^\d{9}$/, 'Debe tener 9 dígitos')
-		.required('El teléfono es obligatorio'),
-	direccion: yup
-		.string()
-		.min(3, 'Mínimo 3 caracteres')
-		.required('La dirección es obligatoria'),
-	fecha_nacimiento: yup
-		.date()
-		.required('La fecha de nacimiento es obligatoria')
-		.max(new Date(), 'La fecha de nacimiento no puede ser futura'),
-	fecha_ingreso: yup
-		.date()
-		.required('La fecha de ingreso es obligatoria')
-		.max(new Date(), 'La fecha de ingreso no puede ser futura'),
-	tienda_id: yup.string().required('Selecciona una tienda'),
+		.required(),
+	direccion: yup.string().min(3).required(),
+	fecha_nacimiento: yup.date().required(),
+	fecha_ingreso: yup.date().required(),
+	cargo_id: yup.string().required(),
+	fecha_renovacion: yup.date().nullable(),
+	tienda_id: yup.string().required(),
 });
+
 type FormData = yup.InferType<typeof schema>;
 
-interface EmpleadoFormProps {
+interface Props {
 	onClose: () => void;
 }
 
-export default function EmpleadoForm({ onClose }: EmpleadoFormProps) {
-	const [tiendas, setTiendas] = useState<{ id: string; nombre: string }[]>([]);
+export default function RegistrarEmpleado({ onClose }: Props) {
 	const {
 		register,
 		handleSubmit,
@@ -61,220 +41,252 @@ export default function EmpleadoForm({ onClose }: EmpleadoFormProps) {
 	} = useForm<FormData>({
 		resolver: yupResolver(schema),
 	});
+
+	const [tiendas, setTiendas] = useState<{ id: string; nombre: string }[]>([]);
+	const [cargos, setCargos] = useState<{ id: string; nombre: string }[]>([]);
 	const { fetchGetEmpleado } = useEmpleadoStore();
 	const { toast } = useToast();
-	const onSubmit = async (data: FormData) => {
-		const response = await fetch('/api/registrar-empleado', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(data),
-		});
-
-		const result = await response.json();
-		console.log('result', result);
-		if (!response.ok) {
-			alert('Error: ' + result.error);
-			return;
-		}
-
-		// Actualiza la lista de empleados después de registrar uno nuevo
-		await fetchGetEmpleado();
-		// Muestra un mensaje de éxito
-		toast({
-			title: 'Empleado registrado',
-			description: 'El empleado se ha registrado correctamente.',
-			action: <ToastAction altText="Deshacer">Deshacer</ToastAction>,
-		});
-
-		reset();
-		onClose(); // Cierra el modal después de registrar
-	};
 
 	useEffect(() => {
-		const fetchTiendas = async () => {
-			const { data, error } = await supabase
+		const obtenerData = async () => {
+			const { data: tiendasData } = await supabase
 				.from('tiendas')
 				.select('id, nombre');
-			if (error) {
-				console.error('Error al obtener tiendas:', error);
-			} else {
-				setTiendas(data);
-			}
+			const { data: cargosData } = await supabase
+				.from('cargo')
+				.select('id, nombre');
+			if (tiendasData) setTiendas(tiendasData);
+			if (cargosData) setCargos(cargosData);
 		};
-		fetchTiendas();
+		obtenerData();
 	}, []);
 
+	const onSubmit = async (data: FormData) => {
+		try {
+			// 1. Guardar empleado sin contrato_url
+			const res = await fetch('/api/registrar-empleado', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ ...data, contrato_url: '' }),
+			});
+
+			if (!res.ok || res.status === 400) {
+				const errorResponse = await res.json();
+
+				toast({
+					title: 'Empleado no registrado',
+					description: errorResponse.error || 'Error al registrar empleado',
+					action: <ToastAction altText="Ok">Cerrar</ToastAction>,
+				});
+				return;
+			}
+
+			// 2. Si se subió un contrato, ahora lo mandamos usando el DNI
+			const fileInput = document.getElementById(
+				'contrato-file'
+			) as HTMLInputElement;
+			const file = fileInput?.files?.[0];
+
+			if (file) {
+				const formData = new FormData();
+				formData.append('contrato', file);
+				formData.append('dni', data.dni);
+
+				const contratoRes = await fetch('/api/upload-contrato', {
+					method: 'POST',
+					body: formData,
+				});
+
+				console.log('contratoRes', contratoRes);
+
+				if (!contratoRes.ok) {
+					alert('Empleado registrado, pero hubo un error subiendo el contrato');
+					return;
+				}
+			}
+
+			await fetchGetEmpleado();
+			toast({
+				title: 'Empleado registrado',
+				description: 'El empleado fue registrado exitosamente',
+				action: <ToastAction altText="Ok">Cerrar</ToastAction>,
+			});
+
+			reset();
+			onClose();
+		} catch (error) {
+			console.error(error);
+			alert('Ocurrió un error inesperado.');
+		}
+	};
+
 	return (
-		<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-			<div className="max-w-lg mx-auto p-6 bg-white rounded-xl shadow-md">
-				<h2 className="text-2xl font-bold text-center mb-4">
+		<div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+			<div className="bg-white rounded-xl shadow-md p-6 w-full max-w-3xl">
+				<h2 className="text-xl font-bold mb-4 text-center">
 					Registrar Empleado
 				</h2>
+
 				<form
 					onSubmit={handleSubmit(onSubmit)}
 					className="grid grid-cols-2 gap-4"
 				>
 					<div>
-						<label htmlFor="dni" className="block">
-							DNI
-						</label>
+						<label>DNI</label>
 						<input
-							id="dni"
+							type="text"
 							{...register('dni')}
-							placeholder="DNI"
 							className="w-full p-2 border rounded"
 						/>
 						<p className="text-red-500 text-sm">{errors.dni?.message}</p>
 					</div>
+
 					<div>
-						<label htmlFor="nombres" className="block">
-							Nombre
-						</label>
+						<label>Nombres</label>
 						<input
-							id="nombres"
+							type="text"
 							{...register('nombres')}
-							placeholder="Nombre"
 							className="w-full p-2 border rounded"
 						/>
 						<p className="text-red-500 text-sm">{errors.nombres?.message}</p>
 					</div>
+
 					<div>
-						<label htmlFor="apellidos" className="block">
-							Apellido
-						</label>
+						<label>Apellidos</label>
 						<input
-							id="apellidos"
+							type="text"
 							{...register('apellidos')}
-							placeholder="Apellido"
 							className="w-full p-2 border rounded"
 						/>
 						<p className="text-red-500 text-sm">{errors.apellidos?.message}</p>
 					</div>
+
 					<div>
-						<label htmlFor="correo" className="block">
-							Correo
-						</label>
+						<label>Correo</label>
 						<input
-							id="correo"
+							type="email"
 							{...register('correo')}
-							placeholder="Correo"
 							className="w-full p-2 border rounded"
 						/>
 						<p className="text-red-500 text-sm">{errors.correo?.message}</p>
 					</div>
+
 					<div>
-						<label htmlFor="telefono" className="block">
-							Teléfono
-						</label>
+						<label>Teléfono</label>
 						<input
-							id="telefono"
+							type="text"
 							{...register('telefono')}
-							placeholder="Teléfono"
 							className="w-full p-2 border rounded"
 						/>
 						<p className="text-red-500 text-sm">{errors.telefono?.message}</p>
 					</div>
+
 					<div>
-						<label htmlFor="direccion" className="block">
-							Dirección
-						</label>
+						<label>Dirección</label>
 						<input
-							id="direccion"
+							type="text"
 							{...register('direccion')}
-							placeholder="Dirección"
 							className="w-full p-2 border rounded"
 						/>
 						<p className="text-red-500 text-sm">{errors.direccion?.message}</p>
 					</div>
+
 					<div>
-						<label htmlFor="fecha_nacimiento" className="block">
-							Fecha de Nacimiento
-						</label>
+						<label>Fecha de nacimiento</label>
 						<input
-							id="fecha_nacimiento"
-							{...register('fecha_nacimiento')}
 							type="date"
+							{...register('fecha_nacimiento')}
 							className="w-full p-2 border rounded"
 						/>
 						<p className="text-red-500 text-sm">
 							{errors.fecha_nacimiento?.message}
 						</p>
 					</div>
+
 					<div>
-						<label htmlFor="fecha_ingreso" className="block">
-							Fecha de Ingreso
-						</label>
+						<label>Fecha de ingreso</label>
 						<input
-							id="fecha_ingreso"
-							{...register('fecha_ingreso')}
 							type="date"
+							{...register('fecha_ingreso')}
 							className="w-full p-2 border rounded"
 						/>
 						<p className="text-red-500 text-sm">
 							{errors.fecha_ingreso?.message}
 						</p>
 					</div>
-					{/* <div>
-						<label htmlFor="fecha_salida" className="block">
-							Fecha de Salida
-						</label>
+					<div>
+						<label>Cargo</label>
+						<select
+							{...register('cargo_id')}
+							className="w-full p-2 border rounded"
+						>
+							<option value="">Selecciona un cargo</option>
+							{cargos.map((c) => (
+								<option key={c.id} value={c.id}>
+									{c.nombre}
+								</option>
+							))}
+						</select>
+						<p className="text-red-500 text-sm">{errors.cargo_id?.message}</p>
+					</div>
+
+					<div>
+						<label>Fecha de renovación</label>
 						<input
-							id="fecha_salida"
-							{...register('fecha_salida')}
 							type="date"
+							{...register('fecha_renovacion')}
 							className="w-full p-2 border rounded"
 						/>
 						<p className="text-red-500 text-sm">
-							{errors.fecha_salida?.message}
+							{errors.fecha_renovacion?.message}
 						</p>
-					</div> */}
-					{/* <div>
-						<label htmlFor="estado" className="block">
-							Estado
-						</label>
-						<select
-							id="estado"
-							{...register('estado')}
-							className="w-full p-2 border rounded"
-						>
-							<option value="">Selecciona un estado</option>
-							<option value="true">Activo</option>
-							<option value="false">Inactivo</option>
-						</select>
-						<p className="text-red-500 text-sm">{errors.estado?.message}</p>
-					</div> */}
+					</div>
+
 					<div>
-						<label htmlFor="tienda_id" className="block">
-							Tienda
+						<label
+							className="block text-sm font-medium mb-1"
+							htmlFor="contrato-file"
+						>
+							Contrato (PDF)
 						</label>
+						<input
+							type="file"
+							id="contrato-file"
+							accept="application/pdf"
+							className="w-full border rounded px-3 py-2"
+						/>
+					</div>
+
+					<div>
+						<label>Tienda</label>
 						<select
-							id="tienda_id"
 							{...register('tienda_id')}
 							className="w-full p-2 border rounded"
 						>
 							<option value="">Selecciona una tienda</option>
-							{tiendas.map((tienda) => (
-								<option key={tienda.id} value={tienda.id}>
-									{tienda.nombre}
+							{tiendas.map((t) => (
+								<option key={t.id} value={t.id}>
+									{t.nombre}
 								</option>
 							))}
 						</select>
 						<p className="text-red-500 text-sm">{errors.tienda_id?.message}</p>
 					</div>
-					<div className="col-span-2 flex gap-2">
-						<button
-							type="submit"
-							className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
-							disabled={isSubmitting}
-						>
-							{isSubmitting ? 'Registrando...' : 'Registrar'}
-						</button>
+
+					<div className="col-span-2 flex justify-end gap-3 mt-4">
 						<button
 							type="button"
 							onClick={onClose}
-							className="w-full bg-gray-500 text-white p-2 rounded hover:bg-gray-600"
+							className="px-4 py-2 bg-gray-500 text-white rounded"
 						>
 							Cancelar
+						</button>
+						<button
+							type="submit"
+							disabled={isSubmitting}
+							className="px-4 py-2 bg-blue-600 text-white rounded"
+						>
+							{isSubmitting ? 'Registrando...' : 'Registrar'}
 						</button>
 					</div>
 				</form>

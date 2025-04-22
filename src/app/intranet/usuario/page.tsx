@@ -27,22 +27,22 @@ export default function Usuario() {
 					</div>
 				</div>
 				{/* Datos generales */}
-				<div className="bg-gray-50 p-4 rounded-md grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+				<div className="bg-gray-50 p-4 rounded-md grid grid-cols-2 md:grid-cols-3 gap-4 text-center">
 					<div className=" border-r-2 border-gray-300 pr-4">
 						<p className="text-xs text-gray-500">F. Contrato</p>
 						<p className="font-semibold">{empleado?.fecha_ingreso}</p>
 					</div>
 					<div className=" border-r-2 border-gray-300 pr-4">
 						<p className="text-xs text-gray-500">F. Renovación</p>
-						<p className="font-semibold">01/06/25</p>
+						<p className="font-semibold">{empleado?.fecha_renovacion}</p>
 					</div>
-					<div className=" border-r-2 border-gray-300 pr-4">
+					{/* <div className=" border-r-2 border-gray-300 pr-4">
 						<p className="text-xs text-gray-500">Cargo</p>
-						<p className="font-semibold">Vendedor</p>
-					</div>
+						<p className="font-semibold">{empleado?.cargo?.nombre}</p>
+					</div> */}
 					<div>
 						<p className="text-xs text-gray-500">Tienda</p>
-						<p className="font-semibold">{empleado?.tienda_id}</p>
+						<p className="font-semibold">{empleado?.tienda?.nombre}</p>
 					</div>
 				</div>
 
@@ -85,7 +85,7 @@ export default function Usuario() {
 								Cargo
 							</label>
 							<input
-								value="Vendedor"
+								value={empleado?.cargo?.nombre ?? 'Cargando...'}
 								disabled
 								className="w-full bg-gray-100 rounded px-3 py-2 capitalize"
 							/>

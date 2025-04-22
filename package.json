@@ -31,6 +31,7 @@
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"date-fns": "^4.1.0",
+		"formidable": "^3.5.2",
 		"jspdf": "^3.0.1",
 		"lucide-react": "^0.471.1",
 		"next": "^15.1.1-canary.25",
@@ -45,6 +46,7 @@
 		"zustand": "^5.0.3"
 	},
 	"devDependencies": {
+		"@types/formidable": "^3.4.5",
 		"@types/node": "^20",
 		"@types/react": "^18",
 		"@types/react-dom": "^18",

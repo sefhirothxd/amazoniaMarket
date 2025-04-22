@@ -8,13 +8,20 @@ interface Empleado {
 	telefono: string;
 	direccion: string;
 	dni: string;
-	tienda_id: number;
+	tienda: {
+		nombre: string;
+	} | null;
 	correo: string;
-	fecha_nacimiento: string; // Formato: 'YYYY-MM-DD'
+	fecha_nacimiento: string;
 	fecha_ingreso: string;
 	fecha_salida?: string | null;
 	estado?: boolean;
-	rol?: string; // 'admin' o 'empleado'
+	rol?: string;
+	cargo: {
+		nombre: string;
+	} | null;
+	fecha_renovacion?: string | null;
+	contrato_url?: string;
 }
 
 type Store = {

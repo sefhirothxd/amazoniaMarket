@@ -55,7 +55,7 @@ export function LoginForm() {
 
 		// Redirige según el rol
 		if (empleadoData.rol === 'admin') {
-			router.push('/dashboard');
+			router.push('/intranet/panel');
 		} else {
 			router.push('/intranet/usuario');
 		}

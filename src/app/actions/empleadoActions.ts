@@ -15,21 +15,27 @@ interface Empleado {
 	telefono: string;
 	direccion: string;
 	dni: string;
-	tienda_id: number;
+	tienda: {
+		nombre: string;
+	} | null;
 	correo: string;
-	fecha_nacimiento: string; // Formato: 'YYYY-MM-DD'
+	fecha_nacimiento: string;
 	fecha_ingreso: string;
 	fecha_salida?: string | null;
 	estado?: boolean;
-	rol?: string; // 'admin' o 'empleado'
+	rol?: string;
+	cargo: {
+		nombre: string;
+	} | null;
+	fecha_renovacion?: string | null;
+	contrato_url?: string;
 }
 
 // Obtener todos los productos
 export async function getEmpleados(): Promise<Empleado[]> {
 	const { data, error } = await supabase
 		.from('empleados')
-		.select('*, tienda:tiendas(nombre)');
-
+		.select('*, tienda:tiendas(nombre), cargo(nombre)');
 	if (error) {
 		console.error('Error fetching products:', error);
 		throw new Error('Error fetching products');
@@ -40,7 +46,7 @@ export async function getEmpleados(): Promise<Empleado[]> {
 export async function getEmpleado(user_id: string): Promise<Empleado[]> {
 	const { data, error } = await supabase
 		.from('empleados')
-		.select('*')
+		.select('*, cargo(nombre), tienda:tiendas(nombre)')
 		.eq('auth_user_id', user_id);
 
 	if (error) {
