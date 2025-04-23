@@ -34,14 +34,22 @@ export default function DemoPage() {
 		}
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const formattedData = (data || []).map((boleta: any) => ({
-			fecha: `${boleta.mes}-${boleta.anio}`,
-			nombres: boleta.empleado?.nombres ?? '',
-			apellidos: boleta.empleado?.apellidos ?? '',
-			dni: boleta.empleado?.dni ?? '',
-			tienda: boleta.empleado?.tienda?.nombre ?? '',
-			ruta_pdf: boleta.ruta_pdf,
-		}));
+		const formattedData = data.map((boleta: any) => {
+			const mes = String(boleta.mes).padStart(2, '0'); // Aseguramos que el mes tenga 2 dígitos
+			const anio_num = parseInt(boleta.anio, 10);
+			const mes_num = parseInt(boleta.mes, 10);
+
+			return {
+				fecha: `${mes}/${boleta.anio}`,
+				nombres: boleta.empleado?.nombres,
+				apellidos: boleta.empleado?.apellidos,
+				dni: boleta.empleado?.dni,
+				tienda: boleta.empleado?.tienda?.nombre,
+				ruta_pdf: boleta.ruta_pdf,
+				anio_num: anio_num,
+				mes_num: mes_num,
+			};
+		});
 
 		setData(formattedData);
 	}

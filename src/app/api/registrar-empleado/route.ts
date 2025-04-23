@@ -10,6 +10,12 @@ export async function POST(req: Request) {
 	try {
 		const body = await req.json();
 
+		// No convertimos las fechas a dd/mm/yyyy para insertarlas en la base de datos.
+		const fechaIngreso = body.fecha_ingreso; // Mantén el formato original
+		const fechaRenovacion = body.fecha_renovacion || null; // Mantén el formato original
+		const fechaNacimiento = body.fecha_nacimiento; // Mantén el formato original
+		const fechaSalida = body.fecha_salida || null; // Mantén el formato original
+
 		// 1. Crear el usuario en Auth
 		const { data: authData, error: authError } =
 			await supabase.auth.admin.createUser({
@@ -27,7 +33,7 @@ export async function POST(req: Request) {
 
 		const auth_user_id = authData.user.id;
 
-		// 2. Insertar en la tabla empleados
+		// 2. Insertar en la tabla empleados con las fechas sin convertir
 		const { error: insertError } = await supabase.from('empleados').insert({
 			dni: body.dni,
 			nombres: body.nombres,
@@ -35,13 +41,13 @@ export async function POST(req: Request) {
 			correo: body.correo,
 			telefono: body.telefono,
 			direccion: body.direccion,
-			fecha_nacimiento: body.fecha_nacimiento,
-			fecha_ingreso: body.fecha_ingreso,
-			fecha_salida: body.fecha_salida || null,
+			fecha_nacimiento: fechaNacimiento,
+			fecha_ingreso: fechaIngreso,
+			fecha_salida: fechaSalida || null,
 			estado: body.estado ?? true,
 			tienda_id: body.tienda_id,
 			cargo_id: body.cargo_id,
-			fecha_renovacion: body.fecha_renovacion || null,
+			fecha_renovacion: fechaRenovacion || null,
 			contrato_url: body.contrato_url || null,
 			auth_user_id: authData.user.id,
 		});
@@ -51,7 +57,7 @@ export async function POST(req: Request) {
 				insertError.message.includes('duplicate key value') &&
 				insertError.message.includes('empleados_dni_key')
 			) {
-				//delete auth user
+				// Eliminar el usuario creado si ocurre error por duplicado
 				await supabase.auth.admin.deleteUser(auth_user_id);
 
 				return NextResponse.json(

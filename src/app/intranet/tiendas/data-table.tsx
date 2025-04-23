@@ -20,7 +20,6 @@ interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
 }
-import { getRenovacionColor } from './columns';
 
 export function DataTable<TData, TValue>({
 	columns,
@@ -33,9 +32,9 @@ export function DataTable<TData, TValue>({
 	});
 
 	return (
-		<div className="overflow-hidden rounded-[25px] border shadow-sm capitalize">
-			<Table className="rounded-md border ">
-				<TableHeader className="bg-black">
+		<div className="overflow-hidden rounded-[25px] border bg-white shadow-sm">
+			<Table>
+				<TableHeader className="bg-black  ">
 					{table.getHeaderGroups().map((headerGroup) => (
 						<TableRow key={headerGroup.id}>
 							{headerGroup.headers.map((header) => {
@@ -59,14 +58,9 @@ export function DataTable<TData, TValue>({
 							<TableRow
 								key={row.id}
 								data-state={row.getIsSelected() && 'selected'}
-								className={getRenovacionColor(
-									// aseguramos que el tipo tenga 'fecha_renovacion'
-									// eslint-disable-next-line @typescript-eslint/no-explicit-any
-									(row.original as any).fecha_renovacion
-								)}
 							>
 								{row.getVisibleCells().map((cell) => (
-									<TableCell key={cell.id} className="px-10 ">
+									<TableCell key={cell.id} className="px-10">
 										{flexRender(cell.column.columnDef.cell, cell.getContext())}
 									</TableCell>
 								))}

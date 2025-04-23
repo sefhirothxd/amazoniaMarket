@@ -29,7 +29,7 @@ const SiderbarIntra = () => {
 		},
 		{
 			name: 'Tiendas',
-			url: '',
+			url: '/intranet/tiendas',
 			icons: icons.ShoppingBag,
 		},
 		{

@@ -17,6 +17,8 @@ export type Empleado = {
 			nombre: string;
 		};
 	};
+	anio_num: number; // Añade esta línea
+	mes_num: number; // Añade esta línea
 };
 
 export const columns: ColumnDef<Empleado>[] = [

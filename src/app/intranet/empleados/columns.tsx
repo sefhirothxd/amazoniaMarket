@@ -1,5 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { FileDown } from 'lucide-react';
+import { clsx } from 'clsx'; // Asegúrate de tener esto instalado
 
 export type Empleado = {
 	id?: number;
@@ -24,22 +25,47 @@ export type Empleado = {
 	contrato_url?: string;
 };
 
+function formatearFechaLatam(fecha: string): string {
+	if (!fecha) return '—';
+	const [anio, mes, dia] = fecha.split('T')[0].split('-');
+	return `${dia}/${mes}/${anio}`;
+}
+
+export function getRenovacionColor(fechaRenovacion?: string | null) {
+	if (!fechaRenovacion) return '';
+	const hoy = new Date();
+	const fecha = new Date(fechaRenovacion.split('T')[0]);
+	const diff = Math.ceil(
+		(fecha.getTime() - hoy.getTime()) / (1000 * 60 * 60 * 24)
+	);
+	if (diff < 0) return 'bg-red-300'; // vencido
+	if (diff <= 14) return 'bg-yellow-300'; // por vencer
+	return '';
+}
+
 export const columns: ColumnDef<Empleado>[] = [
 	{
 		accessorKey: 'fecha_ingreso',
 		header: () => <div className="w-[100px]">F. Ingreso</div>,
-		cell: ({ row }) => (
-			<div className="w-[100px] truncate">{row.getValue('fecha_ingreso')}</div>
-		),
+		cell: ({ row }) => {
+			const fecha = row.getValue('fecha_ingreso') as string;
+			return (
+				<div className="w-[100px] truncate">{formatearFechaLatam(fecha)}</div>
+			);
+		},
 	},
 	{
 		accessorKey: 'fecha_renovacion',
 		header: () => <div className="w-[100px]">F. Renovación</div>,
-		cell: ({ row }) => (
-			<div className="w-[100px] truncate">
-				{row.getValue('fecha_renovacion')}
-			</div>
-		),
+		cell: ({ row }) => {
+			const fecha = row.getValue('fecha_renovacion') as string;
+
+			return (
+				<div className={clsx('w-[100px] truncate')}>
+					{fecha ? formatearFechaLatam(fecha) : '—'}
+				</div>
+			);
+		},
 	},
 	{
 		accessorKey: 'nombres',

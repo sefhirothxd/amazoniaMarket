@@ -8,33 +8,37 @@ import { supabase } from '@/lib/supabase';
 import { useEmpleadoStore } from '@/store/useEmpleadoStore';
 
 async function getData(): Promise<Empleado[]> {
-	// Fetch data from your API here.
-
 	const { data, error } = (await supabase.from('boletas_pago').select(`
-	  anio,
-	  mes,
-	  ruta_pdf,
-	  empleado:empleados(
-		nombres,
-		apellidos,
-		dni,
-		tienda:tiendas(nombre)
-	  )
-	
-	`)) as any;
+        anio,
+        mes,
+        ruta_pdf,
+        empleado:empleados(
+            nombres,
+            apellidos,
+            dni,
+            tienda:tiendas(nombre)
+        )
+
+    `)) as any;
 	console.log('data:', data);
 	console.log('error:', error);
 
-	// getdata from api
+	return data.map((boleta: any) => {
+		const mes = String(boleta.mes).padStart(2, '0'); // Aseguramos que el mes tenga 2 dígitos
+		const anio_num = parseInt(boleta.anio, 10);
+		const mes_num = parseInt(boleta.mes, 10);
 
-	return data.map((boleta: Empleado) => ({
-		fecha: `${boleta.mes}-${boleta.anio}`,
-		nombres: boleta.empleado?.nombres,
-		apellidos: boleta.empleado?.apellidos,
-		dni: boleta.empleado?.dni,
-		tienda: boleta.empleado?.tienda?.nombre,
-		ruta_pdf: boleta.ruta_pdf,
-	}));
+		return {
+			fecha: `${mes}/${boleta.anio}`,
+			nombres: boleta.empleado?.nombres,
+			apellidos: boleta.empleado?.apellidos,
+			dni: boleta.empleado?.dni,
+			tienda: boleta.empleado?.tienda?.nombre,
+			ruta_pdf: boleta.ruta_pdf,
+			anio_num: anio_num,
+			mes_num: mes_num,
+		};
+	});
 }
 
 export default function DemoPage() {
@@ -45,15 +49,23 @@ export default function DemoPage() {
 		if (empleado?.rol === 'admin') {
 			async function fetchData() {
 				const result = await getData();
-				console.log('result:', result);
-				setData(result);
+				console.log('result before sort:', result);
+
+				const sortedData = result.sort((a, b) => {
+					if (b.anio_num !== a.anio_num) {
+						return b.anio_num - a.anio_num;
+					}
+					return b.mes_num - a.mes_num;
+				});
+
+				console.log('result after sort:', sortedData);
+				setData(sortedData as Empleado[]);
 			}
 			fetchData();
 		}
 	}, [empleado?.rol]);
 
 	if (empleado?.rol !== 'admin') {
-		// Si no es admin, puedes redirigir o mostrar un mensaje
 		return <div>No tienes permisos para ver esta página</div>;
 	}
 

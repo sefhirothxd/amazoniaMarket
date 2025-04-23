@@ -5,6 +5,7 @@ import { icons } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import ModalPdf from './CargaPdf';
 import EmpleadoForm from './EmpleadoForm';
+import TiendasForm from './TiendasForm';
 import { useEmpleadoStore } from '@/store/useEmpleadoStore';
 import { supabase } from '@/lib/supabase';
 
@@ -12,6 +13,8 @@ const HeaderIntra = () => {
 	const pathname = usePathname();
 	const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar el modal
 	const [isModalOpenEmple, setIsModalOpenEmple] = useState(false); // Estado para controlar el modal
+	const [isModalOpenTiendas, setIsModalOpenTiendas] = useState(false); // Estado para controlar el modal
+
 	interface Empleado {
 		rol?: string; // Define the expected properties of isEmpleado
 		nombres?: string;
@@ -29,6 +32,9 @@ const HeaderIntra = () => {
 	const openModalEmp = () => {
 		setIsModalOpenEmple(true);
 	};
+	const openModalTiendas = () => {
+		setIsModalOpenTiendas(true);
+	};
 
 	// Función para cerrar el modal
 	const closeModal = () => {
@@ -36,6 +42,9 @@ const HeaderIntra = () => {
 	};
 	const closeModalEmp = () => {
 		setIsModalOpenEmple(false);
+	};
+	const closeModalTiendas = () => {
+		setIsModalOpenTiendas(false);
 	};
 
 	const fetchData = async () => {
@@ -61,7 +70,9 @@ const HeaderIntra = () => {
 	return (
 		<div
 			className={
-				pathname === '/intranet/boletas' || pathname === '/intranet/empleados'
+				pathname === '/intranet/boletas' ||
+				pathname === '/intranet/empleados' ||
+				pathname === '/intranet/tiendas'
 					? 'flex justify-between w-full gap-[24px] items-center'
 					: 'flex justify-end w-full gap-[24px] items-center'
 			}
@@ -106,6 +117,28 @@ const HeaderIntra = () => {
                     </div> */}
 				</>
 			)}
+			{pathname === '/intranet/tiendas' && (
+				<>
+					<div>
+						<button
+							onClick={openModalTiendas} // Abre el modal al hacer clic
+							className="bg-[#EA0029] text-white rounded-xl p-2 px-5 flex items-center gap-1 text-[18px]"
+						>
+							<icons.Plus size={24} />
+							Añadir
+						</button>
+					</div>
+					{/* <div>
+						<input
+							type="text"
+							className="border-2 border-[#E5E5E5] rounded-xl p-2 px-5 md:w-[400px] w-[600px] min-w-[200px] text-[18px]"
+							placeholder="Buscar"
+						/>
+					</div> */}
+				</>
+			)}
+
+			{/* Renderiza el nombre y la foto del empleado */}
 
 			<div className="flex items-center gap-4">
 				<div className="flex flex-col items-end gap-0">
@@ -126,6 +159,8 @@ const HeaderIntra = () => {
 			{/* Renderiza el modal si isModalOpen es true */}
 			{isModalOpen && <ModalPdf onClose={closeModal} />}
 			{isModalOpenEmple && <EmpleadoForm onClose={closeModalEmp} />}
+			{/* tiendas */}
+			{isModalOpenTiendas && <TiendasForm onClose={closeModalTiendas} />}
 		</div>
 	);
 };

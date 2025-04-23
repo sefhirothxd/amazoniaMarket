@@ -8,7 +8,7 @@ export async function POST(req: Request) {
 	const dni = formData.get('dni') as string;
 	const contratoFile = formData.get('contrato_url') as File | null;
 
-	console.log('url:', contratoFile);
+	console.log('fromdata:', formData);
 
 	const campos = {
 		nombres: formData.get('nombres'),
@@ -22,10 +22,12 @@ export async function POST(req: Request) {
 		fecha_renovacion: formData.get('fecha_renovacion'),
 	};
 
-	let contrato_url: string | null = null;
+	let contrato_url: string | null = formData.get('contrato_url') as
+		| string
+		| null; // Mantener el valor existente
 
-	if (contratoFile) {
-		// Guardar el nuevo archivo con el mismo nombre (dni.pdf)
+	if (contratoFile instanceof File) {
+		// Solo procesar el archivo si se ha subido uno nuevo
 		const buffer = Buffer.from(await contratoFile.arrayBuffer());
 		const fileName = `${dni}.pdf`;
 		const filePath = path.join(process.cwd(), 'public/contratos', fileName);
