@@ -20,6 +20,7 @@ export async function POST(req: Request) {
 		fecha_ingreso: formData.get('fecha_ingreso'),
 		fecha_salida: formData.get('fecha_salida'),
 		fecha_renovacion: formData.get('fecha_renovacion'),
+		cargo_id: formData.get('cargo_id'),
 	};
 
 	let contrato_url: string | null = formData.get('contrato_url') as

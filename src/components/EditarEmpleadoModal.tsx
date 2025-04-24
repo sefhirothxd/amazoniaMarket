@@ -8,6 +8,12 @@ import {
 } from '@/components/ui/dialog';
 import { FormEvent, useEffect, useState } from 'react';
 import { useEmpleadoStore } from '@/store/useEmpleadoStore';
+import { supabase } from '@/lib/supabase';
+
+interface Cargo {
+	id: number;
+	nombre: string;
+}
 
 interface Props {
 	open: boolean;
@@ -23,36 +29,87 @@ export function EditarEmpleadoModal({
 	onSave,
 }: Props) {
 	const [form, setForm] = useState<Empleado | null>(empleado);
+	const [cargos, setCargos] = useState<Cargo[]>([]);
 	const { fetchGetEmpleado } = useEmpleadoStore();
+
 	useEffect(() => {
 		setForm(empleado);
+		const obtenerCargos = async () => {
+			const { data, error } = await supabase.from('cargo').select('id, nombre');
+
+			if (error) {
+				console.error('Error al obtener cargos:', error);
+				return;
+			}
+
+			if (data) {
+				setCargos(data as Cargo[]);
+			}
+		};
+
+		obtenerCargos();
 	}, [empleado]);
 
 	if (!form) return null;
 
 	const handleChange = (
 		key: keyof Empleado,
-		value: string | boolean | File | null
+		value: string | boolean | File | null | Cargo // Permitir objeto Cargo
 	) => {
 		setForm((prev) => (prev ? { ...prev, [key]: value } : prev));
 	};
 
+	const handleCargoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+		const selectedCargoId = event.target.value;
+		const selectedCargo = cargos.find(
+			(cargo) => cargo.id === parseInt(selectedCargoId)
+		);
+		handleChange('cargo', selectedCargo || null);
+		// También actualizamos directamente el cargo_id en el form para el envío
+		// ignore ts
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		setForm((prev) =>
+			prev
+				? {
+						...prev,
+						cargo_id: selectedCargoId || '', // Ensure cargo_id is a string
+				  }
+				: prev
+		);
+	};
+
 	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-		e.preventDefault(); //
+		e.preventDefault();
 
 		if (!form) return;
 
 		const formData = new FormData();
 		for (const key of Object.keys(form) as (keyof Empleado)[]) {
-			if (form[key] !== null) formData.append(key, form[key] as string | Blob);
+			if (form[key] !== null) {
+				if (
+					key === 'cargo' &&
+					typeof form[key] === 'object' &&
+					form[key] !== null
+				) {
+					formData.append(
+						'cargo_id',
+						(form[key] as Cargo).id?.toString() || ''
+					);
+					formData.append('cargo_nombre', (form[key] as Cargo).nombre || '');
+				} else if (key === 'cargo_id') {
+					formData.append(key, form[key]?.toString() || '');
+				} else {
+					formData.append(key, form[key] as string | Blob);
+				}
+			}
 		}
 
 		await fetch('/api/editar-empleado', {
 			method: 'POST',
 			body: formData,
 		});
-		await fetchGetEmpleado(); // actualizar empleados en el store
-		onSave(form); // actualizar estado en frontend
+		await fetchGetEmpleado();
+		onSave(form);
 		onClose();
 	};
 
@@ -105,7 +162,23 @@ export function EditarEmpleadoModal({
 						</div>
 					))}
 
-					<div className="flex flex-col gap-1 col-span-2">
+					<div key="cargo" className="flex flex-col gap-1">
+						<label className="font-medium text-sm text-gray-700">Cargo</label>
+						<select
+							value={form.cargo_id?.toString() || ''}
+							onChange={handleCargoChange}
+							className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+						>
+							<option value="">Seleccionar Cargo</option>
+							{cargos.map((c) => (
+								<option key={c.id} value={c.id}>
+									{c.nombre}
+								</option>
+							))}
+						</select>
+					</div>
+
+					<div className="col-span-2 flex flex-col gap-1">
 						<label className="font-medium text-sm text-gray-700">
 							Contrato PDF
 						</label>

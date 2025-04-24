@@ -55,11 +55,6 @@ const SiderbarIntra = () => {
 			icons: icons.FileText,
 		},
 		{
-			name: 'Tiendas',
-			url: '',
-			icons: icons.ShoppingBag,
-		},
-		{
 			name: 'Movilidad',
 			url: '/intranet/movilidad',
 			icons: icons.Truck,
@@ -102,13 +97,13 @@ const SiderbarIntra = () => {
 				<ul className="flex-col flex justify-between items-center gap-[10px]">
 					{empleado?.rol === 'admin'
 						? linksAdmin.map((link, index) => (
-								<li key={index} className=" lg:w-[255px] text-[18px] w-full">
+								<li key={index} className=" lg:w-[255px] text-[18px] w-[60px]">
 									<Link
 										href={link.url}
 										className={
 											pathname == link.url
-												? 'flex items-center space-x-2 gap-[12px] bg-black text-white pl-[18px]  lg:pl-[30px] py-[15px] rounded-full font-semibold '
-												: 'flex items-center space-x-2 gap-[12px] hover:bg-black hover:text-white pl-[18px]   lg:pl-[30px] py-[15px] rounded-full font-semibold '
+												? 'flex items-center space-x-2  gap-[12px] bg-black text-white h-[60px] pl-[18px]  lg:pl-[30px] py-[18px] rounded-full font-semibold '
+												: 'flex items-center space-x-2 h-[60px]  gap-[12px] hover:bg-black hover:text-white pl-[18px]   lg:pl-[30px] py-[15px] rounded-full font-semibold '
 										}
 									>
 										{link.icons &&

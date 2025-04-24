@@ -18,6 +18,9 @@ const HeaderIntra = () => {
 	interface Empleado {
 		rol?: string; // Define the expected properties of isEmpleado
 		nombres?: string;
+		cargo?: {
+			nombre?: string; // Define the expected structure of the cargo property
+		} | null;
 	}
 
 	const [isEmpleado, setIsEmpleado] = useState<Empleado>({}); // Estado para controlar el modal
@@ -146,7 +149,7 @@ const HeaderIntra = () => {
 						Hola👋 {isEmpleado?.nombres}
 					</p>
 					<small className="font-semibold text-[18px] text-[#949494] capitalize">
-						{isEmpleado?.rol}
+						{isEmpleado?.cargo?.nombre}
 					</small>
 				</div>
 				<div className="bg-black w-[50px] h-[50px] rounded-full flex items-center justify-center">

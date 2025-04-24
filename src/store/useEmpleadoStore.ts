@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { getEmpleados, getEmpleado } from '@/app/actions/empleadoActions';
 
 interface Empleado {
+	cargo_id?: string;
 	id?: number;
 	nombres: string;
 	apellidos: string;

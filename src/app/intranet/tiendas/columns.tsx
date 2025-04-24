@@ -20,7 +20,7 @@ export const columns: ColumnDef<Tienda>[] = [
 		accessorKey: 'ciudad',
 	},
 	{
-		header: 'Creado En',
+		header: 'Fecha',
 		accessorKey: 'created_at',
 		cell: ({ row }) =>
 			row.getValue('created_at')

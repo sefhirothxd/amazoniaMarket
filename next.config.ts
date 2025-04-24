@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
 		domains: ['jzkbzghdxxqlugatkuqn.supabase.co'], // Agrega aquí el dominio
 	},
 	devIndicators: {
+		buildActivity: false,
 		appIsrStatus: false,
 	},
 };
