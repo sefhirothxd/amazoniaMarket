@@ -18,9 +18,11 @@ export function LoginForm() {
 		e.preventDefault();
 		setLoading(true);
 
+		const emailComplet = email + '@amazoniamarket.pe';
+
 		const { data: authData, error: authError } =
 			await supabase.auth.signInWithPassword({
-				email,
+				email: emailComplet,
 				password,
 			});
 
@@ -106,7 +108,7 @@ export function LoginForm() {
 						<input
 							placeholder="Correo electrónico"
 							id="email"
-							type="email"
+							type="text"
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
 							required

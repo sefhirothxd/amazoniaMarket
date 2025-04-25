@@ -13,7 +13,7 @@ const schema = yup.object().shape({
 	dni: yup.string().length(8, 'Debe tener 8 dígitos').required(),
 	nombres: yup.string().min(3).required(),
 	apellidos: yup.string().min(3).required(),
-	correo: yup.string().email().required(),
+	// correo: yup.string().email().required(),
 	telefono: yup
 		.string()
 		.matches(/^\d{9}$/, 'Debe tener 9 dígitos')
@@ -161,7 +161,7 @@ export default function RegistrarEmpleado({ onClose }: Props) {
 						<p className="text-red-500 text-sm">{errors.apellidos?.message}</p>
 					</div>
 
-					<div>
+					{/* <div>
 						<label>Correo</label>
 						<input
 							type="email"
@@ -169,7 +169,7 @@ export default function RegistrarEmpleado({ onClose }: Props) {
 							className="w-full p-2 border rounded"
 						/>
 						<p className="text-red-500 text-sm">{errors.correo?.message}</p>
-					</div>
+					</div> */}
 
 					<div>
 						<label>Teléfono</label>

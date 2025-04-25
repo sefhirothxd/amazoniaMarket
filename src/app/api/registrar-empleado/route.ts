@@ -16,10 +16,16 @@ export async function POST(req: Request) {
 		const fechaNacimiento = body.fecha_nacimiento; // Mantén el formato original
 		const fechaSalida = body.fecha_salida || null; // Mantén el formato original
 
+		//crear correo por nombre y apellido
+		const correo = `${body.nombres.charAt(0).toLowerCase()}${body.apellidos
+			.trim()
+			.toLowerCase()
+			.replace(/\s+/g, '')}@amazoniamarket.pe`;
+		console.log('🚀 ~ correo:', correo);
 		// 1. Crear el usuario en Auth
 		const { data: authData, error: authError } =
 			await supabase.auth.admin.createUser({
-				email: body.correo,
+				email: correo,
 				password: body.dni,
 				email_confirm: true,
 			});
@@ -38,7 +44,7 @@ export async function POST(req: Request) {
 			dni: body.dni,
 			nombres: body.nombres,
 			apellidos: body.apellidos,
-			correo: body.correo,
+			correo: correo,
 			telefono: body.telefono,
 			direccion: body.direccion,
 			fecha_nacimiento: fechaNacimiento,

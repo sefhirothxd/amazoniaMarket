@@ -3,7 +3,7 @@ import { clsx } from 'clsx'; // Asegúrate de tener esto instalado
 import Image from 'next/image';
 
 export type Empleado = {
-	cargo_id: string; // <--- Asegúrate de que esta propiedad esté aquí
+	cargo_id: string;
 	id?: number;
 	nombres: string;
 	apellidos: string;
